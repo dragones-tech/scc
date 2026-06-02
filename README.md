@@ -9,6 +9,9 @@ It's the styling layer of a no-magic stack alongside
 [Lumen](https://github.com/dragones-tech/lumen) (vanilla-JS UI) and
 [Agogo](https://github.com/dragones-tech/agogo) (server-rendered HTML in Go).
 
+**▶ Live demo: <https://dragones-tech.github.io/scc/>** — every component, live, with
+its code; a token customizer; light/dark and theme switches; EN/ES.
+
 ## Golden rule
 
 > If a class/attribute in the HTML describes **how something looks**, it's wrong.
@@ -33,7 +36,8 @@ It's the styling layer of a no-magic stack alongside
 
 No npm, no compiling. The demo under `demo/` is a small SPA built with
 [Lumen](https://github.com/dragones-tech/lumen) (vendored, no build) that showcases
-the whole stack — run it from a static server (ES modules need HTTP, not `file://`):
+the whole stack — [see it live](https://dragones-tech.github.io/scc/), or run it from
+a static server (ES modules need HTTP, not `file://`):
 
 ```sh
 python3 -m http.server   # then open http://localhost:8000/demo/
