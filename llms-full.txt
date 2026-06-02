@@ -1,0 +1,287 @@
+# scc — Scoped Cascade CSS
+
+A transparent, no-build, no-magic CSS microframework. It styles semantic HTML
+by leaning on the NATIVE primitives of the platform (@layer, @scope, custom
+properties, color-mix(), light-dark()) instead of a tooling layer (Sass,
+PostCSS, Tailwind JIT) or patch conventions (BEM).
+
+It's the styling leg of a no-magic stack alongside Lumen (vanilla-JS UI,
+Light DOM) and Agogo (server-rendered HTML in Go). The same principle across all
+three layers: use the native platform, no compile step, everything readable and
+auditable.
+
+--------------------------------------------------------------------------------
+## The thesis
+
+CSS from 2024+ already has the primitives that made heavy tooling "necessary":
+
+  - @layer          → deterministic cascade order. Goodbye specificity wars and
+                      methodologies like ITCSS.
+  - @scope          → NATIVE component isolation. Goodbye inventing unique names
+                      (BEM) to prevent style leaks.
+  - custom props    → design tokens at runtime. Goodbye Sass compiled variables.
+  - native nesting  → nest without a preprocessor.
+  - color-mix()     → states (hover, etc.) derived without defining 10 shades.
+  - light-dark()    → light/dark theme without JS or classes.
+
+scc is those primitives, organized with a minimal, consistent convention. It
+adds no runtime, no dependencies, and no build step.
+
+--------------------------------------------------------------------------------
+## The golden rule
+
+  If a class or attribute in the HTML describes HOW SOMETHING LOOKS, it's wrong.
+  If it describes WHAT IT IS or WHAT INTENT it has, it's right.
+
+Right:   <button data-variant="primary">   (intent)
+         <article class="card">             (what it is)
+Wrong:   <article class="rounded shadow p-6 bg-white">  (appearance)
+
+Consequence: presentation logic ALWAYS lives in the .css, never in the markup.
+The HTML stays readable and describes meaning. This is real separation of
+concerns, possible only now that @scope provides native isolation (the
+utility-first argument that "separation is an illusion" only held while CSS had
+no isolation).
+
+--------------------------------------------------------------------------------
+## The six layers (cascade layers)
+
+Declared once in scc.css, in this order (from lowest to highest priority):
+
+  reset       → minimal, modern baseline (box-sizing, margins, fluid media).
+  theme       → THE KNOBS. A few values everything is derived from. Your file.
+  tokens      → full scale DERIVED from theme (calc + custom properties).
+  base        → UNCLASSED elements (body, h1, a, code…). Semantic HTML looks good.
+  components  → one file per component, each in its own @scope.
+  utilities   → the highest and smallest layer: structure and a11y, NEVER appearance.
+
+Because each file assigns itself to its layer, the order of the @import rules
+doesn't affect the cascade. The order is fixed by the `@layer reset, theme, ...;`
+declaration. Predictable and auditable: a style in a higher layer always wins,
+with no specificity tricks or !important.
+
+--------------------------------------------------------------------------------
+## Anatomy of a component
+
+A single pattern for all of them. The root marker is the most semantic thing
+that unambiguously identifies the component — in order of preference:
+  - the semantic element itself, if it maps 1:1 (button, dialog, table, kbd,
+    progress, meter, input[type]…),
+  - a native role, when the role IS the component ([role="tablist"]),
+  - an intent attribute ([data-tooltip]),
+  - element + class when the element is ambiguous (details.menu vs details.accordion),
+  - ONE class on the root when there's no element for it (.card, .field, .badge).
+Everything inside is styled by its element/role. Zero classes per element.
+
+A note on ambiguity: <button> is unambiguous, so it's the marker bare. <nav> is
+NOT (a site bar, a breadcrumb, a pagination are all <nav>), so the site bar takes
+a class (.navbar). Use the element bare only when it maps 1:1 to the component.
+
+    @layer components {
+      @scope (.card) {
+        :scope { /* the root */ }
+        h2     { /* only h2 INSIDE .card */ }
+        footer { /* only footer INSIDE .card */ }
+      }
+    }
+
+Variants and states:
+  - Variants  → intent attribute: [data-variant="primary"].
+  - States    → native pseudo-classes: :hover, :focus, :invalid, :disabled.
+Never additional style classes.
+
+The :scope-override pattern. Some components contain elements that already carry
+an scc base — the tabs are <button>s, menu/chip items are <button>/<a>. The base
+(button.css, base.css) lives in the SAME layer (components/base), so layer order
+won't decide; specificity does. To make the component's restyle win WITHOUT
+!important, prefix the inner selector with :scope (it adds the scope root's
+specificity):
+
+    @scope ([role="tablist"]) {
+      :scope [role="tab"] { /* wins over @scope(button){:scope} — (0,2,0) > (0,1,0) */ }
+    }
+
+This is the one place specificity matters inside scc; it's local and explicit,
+not a specificity war. Used in tabs.css, menu.css and chip.css.
+
+--------------------------------------------------------------------------------
+## File structure
+
+  scc.css              Entry. Declares the layer order and imports everything.
+  reset.css            @layer reset
+  theme.css            @layer theme   ← THE KNOBS: edit/copy this for your site
+  tokens.css           @layer tokens  ← derived from theme.css; no need to touch it
+  base.css             @layer base
+  animations.css       shared @keyframes (no layer; referenced internally by components)
+  themes/
+    sunset.css         Example of forking the contract (same markup, different look)
+  components/          one file per component — see the Component catalog below
+    _template.css      copy this to author a new component (not imported)
+  utilities.css        @layer utilities  (.stack .cluster .center .visually-hidden)
+  demo/index.html      No-build demonstration.
+
+--------------------------------------------------------------------------------
+## Usage
+
+  <link rel="stylesheet" href="scc.css">
+
+That's it. No npm, no compiling, no watcher. The files reach the browser as-is;
+HTTP/2 makes serving them unbundled practical.
+
+Re-theme: change the values in theme.css. Override tokens per section or per
+component: redefine the custom property in a more specific scope (works because
+custom properties cascade normally).
+
+  <section style="--accent: #16a34a"> … </section>
+
+--------------------------------------------------------------------------------
+## Adding a component (reference)
+
+Full human walkthrough with a worked example and checklist: GUIDE.md. Starter to
+copy: components/_template.css. The conventions in brief:
+
+1. Marker — most semantic UNAMBIGUOUS option, in order:
+     element (1:1, e.g. button/dialog/table/input[type]) > native role ([role="…"])
+     > intent attribute ([data-…]) > element+class (details.menu) > one class (.card).
+     Litmus: would styling the bare element catch unrelated markup? Then use a class
+     (<button> is safe; <nav> is not → .navbar).
+2. Scaffold — @layer components { @scope (<marker>) { … } }; :scope for the root,
+   element/role selectors for internals. Never per-element classes.
+3. Tokens only — var(--…) for color/space/type/radius/motion; no raw hex/px/ms.
+4. Variants → [data-variant] (ideally swap one local custom property, see alert.css
+   --tone). States → native pseudo-classes (:hover, :checked, [aria-current], [open]).
+5. Inner <button>/<a> carry the scc base → override with a :scope-prefixed selector
+   (the :scope-override pattern above). Used in tabs/menu/chip.
+6. Responsiveness via @container (not @media); motion via tokens + @starting-style;
+   @keyframes go in animations.css.
+7. Register: @import in scc.css (more specific component imported later), then a
+   demo section.
+
+--------------------------------------------------------------------------------
+## Component catalog
+
+26 components. Marker = the selector that identifies the component. "Behavior"
+means a small amount of JS (or your view layer) is needed; everything else is
+pure CSS. Variants are [data-variant] unless noted; states are native pseudo-classes.
+
+FORM & INPUT
+  input        input(text-like) / textarea / select   Global control appearance.
+                                                       Excludes checkbox/radio/range.
+  field        .field                                  Layout only: label+control+hint.
+  choice       input[type=checkbox] / [type=radio]     Native, themed via accent-color.
+  switch       input[role="switch"]                    Checkbox as a toggle.
+  button       button, [data-button]                   Variants: primary, ghost.
+
+CONTAINERS & DATA
+  card         .card                                   Container query: rows when wide.
+  table        table                                   Toggles: [data-zebra] [data-sticky];
+                                                        cells [data-numeric].
+  accordion    details.accordion                       name="" → exclusive, no JS.
+  dialog       dialog                                  Native modal. Behavior: showModal().
+                                                        Entrance via @starting-style.
+
+NAVIGATION
+  nav          .navbar                                 [data-brand], aria-current,
+                                                        [data-nav-end].
+  tabs         [role="tablist"] / [role="tabpanel"]    Behavior: toggle aria-selected/[hidden].
+  menu         details.menu                            Dropdown via <details>. No light-dismiss.
+  breadcrumb   .breadcrumb (on the list)               Wrap in <nav aria-label>. CSS separators.
+  pagination   .pagination (on the list)               Wrap in <nav aria-label>. aria-current.
+
+FEEDBACK & STATUS
+  alert        .alert                                  Block callout. Variants via --tone.
+  toast        .toasts (region) + .toast               Behavior: append/remove. @starting-style.
+  badge        .badge                                  Inline pill. accent/success/warning/danger.
+  chip         .chip                                   Dismissible tag (the × is behavior).
+  tooltip      [data-tooltip]                          ::after + attr(). Hints only; see a11y note.
+  progress     progress                                Vendor pseudo-elements.
+  meter        meter                                   Bands colored from status tokens.
+  skeleton     .skeleton                               Shimmer; paused under reduced-motion.
+  spinner      .spinner                                Indeterminate loader; follows currentColor.
+
+PRIMITIVES
+  avatar       .avatar                                 Image or initials. Size: --avatar-size.
+  kbd          kbd                                     Keycap. Nestable for combos.
+  divider      .divider                                Rule with optional centered label.
+
+--------------------------------------------------------------------------------
+## Themes — the theme is the starting point
+
+Motto: no two sites should look alike. A theme isn't a finished look but a panel
+of knobs. theme.css defines a few inputs; tokens.css derives from them the
+modular type scale (--ratio), the spacing rhythm (--space-base) and even the
+gray ramp, which is TINTED with the brand hue (--neutral-hue/-chroma via oklch).
+Motion is part of the identity too: a --dur scale (fast/default/slow) and the
+easings (--ease, --ease-bounce) — swap them and the UI's movement changes
+character. Changing two values reconfigures the character of the whole UI.
+
+Creating your own site = editing theme.css, or copying it. tokens.css and the
+components are left untouched.
+
+TWO ORTHOGONAL AXES (don't mix them):
+
+  data-mode   = MODE, lighting condition.  light · dark · absent = auto (OS)
+  data-theme  = THEME, brand identity.     sunset · … · absent = default
+
+They compose: <html data-mode="dark"> + <section data-theme="sunset"> = sunset dark.
+
+AXIS 1 · MODE. light-dark() resolves the pair from the COMPUTED color-scheme. By
+default it follows the OS. To force the mode, NO tokens are redefined: only
+color-scheme is changed via [data-mode] (see theme.css):
+
+    document.documentElement.dataset.mode = "dark";  // "light" | "dark" | remove = auto
+
+AXIS 2 · THEME. Redefine the contract tokens under [data-theme="x"]. Each theme
+uses light-dark() internally, so it works in BOTH modes. It can be global (on
+:root) or scoped to a section (<section data-theme="sunset">) → several themes
+coexist on the same page. Important: a themed scope RE-DECLARES the inherited
+properties (color, font-family) so the theme cascades inward (see the
+[data-theme] rule in theme.css). See themes/sunset.css: same markup, components
+untouched, completely different look (serif, dramatic scale, bold borders, no
+shadow).
+
+--------------------------------------------------------------------------------
+## Breakpoints — "no breakpoints"
+
+Stance: prefer NOT to have breakpoints. Modern CSS handles most responsive cases
+without a single @media:
+
+  - Container queries (@container): the component adapts to ITS width, not the
+    screen's. It fits @scope; see card.css (column to row based on its own width
+    with @container + :has(img)).
+  - Intrinsic layout: flex-wrap, grid repeat(auto-fit, minmax()), min/max/clamp.
+    The demo reflows on its own via .cluster (flex-wrap), zero media queries.
+  - Fluid typography/space with clamp() (e.g. --text-base as a clamp()).
+
+@media is left only for PAGE layout (a sidebar that collapses, etc.).
+
+Honesty: breakpoints CANNOT be custom properties — `@media (min-width: var(--bp))`
+and `@container (min-width: var(--bp))` are not supported. Making it DRY would
+require a preprocessor, forbidden by principle. That's why in scc breakpoints are
+a documented CONVENTION (agreed values), not tokens. Said plainly instead of
+pretending it's DRY.
+
+--------------------------------------------------------------------------------
+## Trade-offs and limits
+
+Strengths:
+  - Zero dependencies, zero runtime, zero build. Nothing that rots from tooling.
+  - Deterministic cascade and auditable code: what you see is what applies.
+  - Semantic, readable HTML; presentation isolated in CSS.
+  - Fits directly with Light DOM (Lumen) and server-rendered HTML (Agogo).
+
+Limits (taken on purpose):
+  - Modern browsers only. @scope: Chrome 118+, Safari 17.4+, Firefox 128+.
+    light-dark()/color-mix() in the same range. It's the same price you already
+    pay for using Lumen; it adds no new constraints to the stack.
+  - Not utility-first: for very specific appearance cases, the right place is a
+    component, not a utility class.
+  - No utility scales (.p-4, .text-lg): it's a decision, not a shortcoming.
+
+--------------------------------------------------------------------------------
+## Lineage
+
+scc is to CSS what Lumen is to Backbone/Marionette: a modernization of proven
+ideas (BEM, ITCSS, OOCSS — isolate, order the cascade, tokens) rebuilt on native
+primitives, without the preprocessor or the patch conventions that the platform
+has already made unnecessary.
