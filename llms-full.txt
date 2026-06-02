@@ -160,7 +160,7 @@ copy: components/_template.css. The conventions in brief:
 --------------------------------------------------------------------------------
 ## Component catalog
 
-27 components. Marker = the selector that identifies the component. "Behavior"
+28 components. Marker = the selector that identifies the component. "Behavior"
 means a small amount of JS (or your view layer) is needed; everything else is
 pure CSS. Variants are [data-variant] unless noted; states are native pseudo-classes.
 
@@ -173,7 +173,9 @@ FORM & INPUT
   switch       input[role="switch"]                    Checkbox as a toggle.
   button       button, [data-button]                   Variants: primary, ghost.
 
-CONTAINERS & DATA
+LAYOUT & CONTAINERS
+  hero         .hero                                   Opening banner: h1/h2 + lead + actions.
+                                                        Variant: bold. Toggle: [data-align=center].
   card         .card                                   Container query: rows when wide.
   table        table                                   Toggles: [data-zebra] [data-sticky];
                                                         cells [data-numeric].

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +9,9 @@
   <link rel="stylesheet" href="../scc.css">
   <!-- example theme (forked contract), available from the theme selector -->
   <link rel="stylesheet" href="../themes/sunset.css">
-  <!-- demo chrome (app shell layout) -->
-  <link rel="stylesheet" href="app.css">
+  <!-- demo chrome (app shell layout). ?v bumped on each edit so a normal reload
+       picks up changes even when the dev server sends no Cache-Control. -->
+  <link rel="stylesheet" href="app.css?v=7">
 
   <!-- Lumen via native ES modules, vendored & pinned (no CDN, no build) -->
   <script type="importmap">
@@ -30,24 +31,29 @@
   <template id="layout">
     <div class="shell">
       <nav class="navbar">
-        <a href="#/" data-brand>scc</a>
+        <a href="#/" data-brand>Scoped Cascade CSS</a>
         <span data-nav-end>
-          <button data-variant="ghost" data-ref="modeBtn" aria-label="Cambiar modo de luz">🌗 Modo: auto</button>
-          <select data-ref="themeSel" aria-label="Tema">
-            <option value="">Tema: default</option>
-            <option value="sunset">Tema: sunset</option>
+          <button data-variant="ghost" data-ref="langBtn" aria-label="Language / Idioma">🌐 EN</button>
+          <button data-variant="ghost" data-ref="modeBtn" aria-label="Toggle light mode">🌗 Light: auto</button>
+          <select data-ref="themeSel" aria-label="Theme">
+            <option value="">Theme: default</option>
+            <option value="sunset">Theme: sunset</option>
           </select>
           <button data-variant="primary" data-ref="customizeBtn">🎛 Tokens</button>
+          <a class="icon-link" href="https://github.com/dragones-tech/scc" target="_blank" rel="noopener" aria-label="View scc on GitHub">
+            <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+          </a>
         </span>
       </nav>
       <div class="shell-body">
-        <aside class="menu" data-ref="menu">
-          <a href="#/">Inicio</a>
-          <a href="#/forms">Formularios</a>
-          <a href="#/containers">Contenedores</a>
-          <a href="#/nav">Navegación</a>
-          <a href="#/feedback">Feedback</a>
-          <a href="#/primitives">Primitivas</a>
+        <aside class="sidebar" data-ref="menu">
+          <a href="#/" data-i18n="nav.home">Home</a>
+          <a href="#/forms" data-i18n="nav.forms">Forms</a>
+          <a href="#/containers" data-i18n="nav.containers">Containers</a>
+          <a href="#/nav" data-i18n="nav.nav">Navigation</a>
+          <a href="#/feedback" data-i18n="nav.feedback">Feedback</a>
+          <a href="#/primitives" data-i18n="nav.primitives">Primitives</a>
+          <a href="#/guide" data-i18n="nav.guide">Guide</a>
         </aside>
         <main class="content" data-ref="outlet"></main>
       </div>
@@ -55,35 +61,183 @@
   </template>
 
   <template id="sec-home">
-    <div class="section">
-      <header class="section-head">
-        <h1>scc + Lumen</h1>
-        <p>
-          Demo construida como SPA con <strong>Lumen</strong> (Views, Region, Router) y estilada
-          con <strong>scc</strong>. Mismo principio: primitivas nativas, sin build, todo auditable.
-          Cada módulo muestra el componente vivo y el código real que lo produce. Arriba a la
-          derecha cambiás <strong>modo</strong> (luz) y <strong>tema</strong> (identidad) — dos ejes que componen.
-        </p>
-      </header>
-      <div class="cluster" style="--cluster-gap: var(--space-4); align-items: stretch">
-        <article class="card" style="flex: 1 1 16rem"><h2>Sin build</h2><p>scc es CSS plano; Lumen son ES modules. Llegan al browser tal cual.</p></article>
-        <article class="card" style="flex: 1 1 16rem"><h2>Sin magia</h2><p>@scope, @layer, custom properties, Router sobre hashchange.</p></article>
-        <article class="card" style="flex: 1 1 16rem"><h2>Componen</h2><p>Lumen renderiza en Light DOM, así cualquier hoja de scc aplica directo.</p></article>
-      </div>
+    <div class="home">
+      <!-- HERO — split: copy on the left, code→result on the right -->
+      <section class="hero hero-split">
+        <div class="hero-copy">
+          <span class="badge" data-variant="accent">Scoped Cascade CSS</span>
+          <h1 data-i18n="home.heroTitle"></h1>
+          <p data-i18n="home.heroLead"></p>
+          <div class="cluster">
+            <a href="#/forms" data-button data-variant="primary" data-i18n="home.cta1"></a>
+            <a href="#/primitives" data-button data-i18n="home.cta2"></a>
+          </div>
+        </div>
+
+        <div class="hero-media">
+          <figure class="code-window">
+            <figcaption class="code-window-bar">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>index.html</span>
+            </figcaption>
+            <pre class="demo-code"><code><span class="tok-punct">&lt;</span><span class="tok-tag">article</span> <span class="tok-attr">class</span>=<span class="tok-str">"card"</span><span class="tok-punct">&gt;</span>
+  <span class="tok-punct">&lt;</span><span class="tok-tag">h2</span><span class="tok-punct">&gt;</span>scc<span class="tok-punct">&lt;/</span><span class="tok-tag">h2</span><span class="tok-punct">&gt;</span>
+  <span class="tok-punct">&lt;</span><span class="tok-tag">p</span><span class="tok-punct">&gt;</span>Sin build, sin magia.<span class="tok-punct">&lt;/</span><span class="tok-tag">p</span><span class="tok-punct">&gt;</span>
+  <span class="tok-punct">&lt;</span><span class="tok-tag">footer</span><span class="tok-punct">&gt;</span>
+    <span class="tok-punct">&lt;</span><span class="tok-tag">button</span> <span class="tok-attr">data-variant</span>=<span class="tok-str">"primary"</span><span class="tok-punct">&gt;</span>Empezar<span class="tok-punct">&lt;/</span><span class="tok-tag">button</span><span class="tok-punct">&gt;</span>
+  <span class="tok-punct">&lt;/</span><span class="tok-tag">footer</span><span class="tok-punct">&gt;</span>
+<span class="tok-punct">&lt;/</span><span class="tok-tag">article</span><span class="tok-punct">&gt;</span></code></pre>
+          </figure>
+          <span class="code-arrow" aria-hidden="true">↓ se ve así</span>
+          <div class="hero-live">
+            <article class="card">
+              <h2>scc</h2>
+              <p>Sin build, sin magia.</p>
+              <footer><button data-variant="primary">Empezar</button></footer>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS band -->
+      <section class="stats reveal">
+        <div class="metric" style="--tone: var(--accent)"><strong>28</strong><span data-i18n="home.statComponents"></span></div>
+        <div class="metric" style="--tone: var(--success)"><strong>6</strong><span data-i18n="home.statLayers"></span></div>
+        <div class="metric" style="--tone: var(--warning)"><strong>0</strong><span data-i18n="home.statBuild"></span></div>
+        <div class="metric" style="--tone: var(--danger)"><strong>0</strong><span data-i18n="home.statDeps"></span></div>
+      </section>
+
+      <!-- PILLARS — small, colored feature cards -->
+      <section class="home-block reveal">
+        <header class="block-head">
+          <h2 data-i18n="home.pillarsTitle"></h2>
+          <p data-i18n="home.pillarsSub"></p>
+        </header>
+        <div class="features">
+          <article class="feature" style="--tone: var(--accent)">
+            <span class="feature-icon" aria-hidden="true">⚡</span>
+            <h3 data-i18n="home.pillar1Title"></h3>
+            <p data-i18n="home.pillar1Desc"></p>
+          </article>
+          <article class="feature" style="--tone: var(--success)">
+            <span class="feature-icon" aria-hidden="true">✦</span>
+            <h3 data-i18n="home.pillar2Title"></h3>
+            <p data-i18n="home.pillar2Desc"></p>
+          </article>
+          <article class="feature" style="--tone: var(--warning)">
+            <span class="feature-icon" aria-hidden="true">◎</span>
+            <h3 data-i18n="home.pillar3Title"></h3>
+            <p data-i18n="home.pillar3Desc"></p>
+          </article>
+        </div>
+      </section>
+
+      <!-- GOLDEN RULE -->
+      <section class="home-block reveal">
+        <header class="block-head">
+          <h2 data-i18n="home.ruleTitle"></h2>
+          <p data-i18n="home.ruleSub"></p>
+        </header>
+        <div class="compare">
+          <article class="card" data-rule="bad">
+            <h3>✗ utility-first</h3>
+            <p data-i18n="home.badDesc"></p>
+            <pre class="demo-code"><code><span class="tok-comment">&lt;!-- ✗ la apariencia vive en la clase --&gt;</span>
+<span class="tok-punct">&lt;</span><span class="tok-tag">article</span> <span class="tok-attr">class</span>=<span class="tok-str">"rounded-lg shadow p-6 bg-white"</span><span class="tok-punct">&gt;</span>…<span class="tok-punct">&lt;/</span><span class="tok-tag">article</span><span class="tok-punct">&gt;</span></code></pre>
+          </article>
+          <article class="card" data-rule="good">
+            <h3>✓ scc</h3>
+            <p data-i18n="home.goodDesc"></p>
+            <pre class="demo-code"><code><span class="tok-comment">&lt;!-- ✓ el HTML dice qué es --&gt;</span>
+<span class="tok-punct">&lt;</span><span class="tok-tag">article</span> <span class="tok-attr">class</span>=<span class="tok-str">"card"</span><span class="tok-punct">&gt;</span>
+  <span class="tok-punct">&lt;</span><span class="tok-tag">h2</span><span class="tok-punct">&gt;</span>Título<span class="tok-punct">&lt;/</span><span class="tok-tag">h2</span><span class="tok-punct">&gt;</span>
+  <span class="tok-punct">&lt;</span><span class="tok-tag">p</span><span class="tok-punct">&gt;</span>Texto…<span class="tok-punct">&lt;/</span><span class="tok-tag">p</span><span class="tok-punct">&gt;</span>
+<span class="tok-punct">&lt;/</span><span class="tok-tag">article</span><span class="tok-punct">&gt;</span></code></pre>
+          </article>
+        </div>
+      </section>
+
+      <!-- ARCHITECTURE -->
+      <section class="home-block reveal">
+        <header class="block-head">
+          <h2 data-i18n="home.archTitle"></h2>
+          <p data-i18n="home.archSub"></p>
+        </header>
+        <div class="layer-flow">
+          <span class="chip">reset</span><span class="layer-arrow" aria-hidden="true">→</span>
+          <span class="chip">theme</span><span class="layer-arrow" aria-hidden="true">→</span>
+          <span class="chip">tokens</span><span class="layer-arrow" aria-hidden="true">→</span>
+          <span class="chip">base</span><span class="layer-arrow" aria-hidden="true">→</span>
+          <span class="chip">components</span><span class="layer-arrow" aria-hidden="true">→</span>
+          <span class="chip">utilities</span>
+        </div>
+      </section>
+
+      <!-- TWO AXES + THEME -->
+      <section class="home-block reveal">
+        <header class="block-head">
+          <h2 data-i18n="home.axesTitle"></h2>
+          <p data-i18n="home.axesSub"></p>
+        </header>
+        <div class="split">
+          <table>
+            <thead>
+              <tr><th data-i18n="home.thAttr"></th><th data-i18n="home.thAxis"></th><th data-i18n="home.thValues"></th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>data-mode</code></td><td data-i18n="home.axisMode"></td><td>light · dark · auto (OS)</td></tr>
+              <tr><td><code>data-theme</code></td><td data-i18n="home.axisTheme"></td><td>sunset · … · default</td></tr>
+            </tbody>
+          </table>
+          <article class="card" data-rule="good">
+            <h3 data-i18n="home.themeCardTitle"></h3>
+            <p data-i18n="home.themeCardDesc"></p>
+            <p><em>«No two sites should look alike.»</em></p>
+          </article>
+        </div>
+      </section>
+
+      <!-- FINAL CTA — bold hero variant -->
+      <section class="hero reveal" data-variant="bold" data-align="center">
+        <h2 data-i18n="home.ctaTitle"></h2>
+        <p data-i18n="home.ctaSub"></p>
+        <div class="cluster" style="justify-content: center">
+          <a href="#/forms" data-button data-i18n="nav.forms"></a>
+          <a href="#/containers" data-button data-i18n="nav.containers"></a>
+          <a href="#/nav" data-button data-i18n="nav.nav"></a>
+          <a href="#/feedback" data-button data-i18n="nav.feedback"></a>
+          <a href="#/primitives" data-button data-i18n="nav.primitives"></a>
+        </div>
+      </section>
+
+      <p class="home-req" data-i18n="home.req"></p>
     </div>
   </template>
 
   <template id="sec-forms">
     <div class="section">
-      <header class="section-head">
-        <h1>Formularios</h1>
-        <p>Controles e inputs nativos, estilados globalmente. El HTML dice qué es; la variante se pide por intención.</p>
-      </header>
+      <section class="hero hero-section" data-size="compact">
+        <div class="hero-copy">
+          <h1 data-i18n="forms.heroTitle"></h1>
+          <p data-i18n="forms.heroLead"></p>
+        </div>
+        <div class="hero-demo" inert>
+          <div class="cluster">
+            <button data-variant="primary">Guardar</button>
+            <button data-variant="ghost">Cancelar</button>
+          </div>
+          <p class="field">
+            <label>Email</label>
+            <input type="email" placeholder="tu@correo.com">
+          </p>
+          <label class="cluster"><input type="checkbox" role="switch" checked> Notificaciones</label>
+        </div>
+      </section>
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Botones</h2>
-          <p>El <code>&lt;button&gt;</code> ya viene estilado: es la marca. Las variantes se piden con <code>data-variant</code>, nunca con clases de apariencia. Un <code>&lt;a&gt;</code> se vuelve botón con <code>data-button</code>.</p>
+          <h2 data-i18n="forms.buttonsTitle"></h2>
+          <p data-i18n="forms.buttonsDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="cluster">
@@ -99,8 +253,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Campos</h2>
-          <p><code>.field</code> apila label + control + ayuda; la apariencia del control vive en <code>input.css</code>. El estado <code>:invalid</code> sale de las pseudo-clases nativas, sin clases extra.</p>
+          <h2 data-i18n="forms.fieldsTitle"></h2>
+          <p data-i18n="forms.fieldsDesc"></p>
         </div>
         <div class="demo-preview">
           <form class="stack" style="--stack-gap: var(--space-4); max-inline-size: 24rem">
@@ -132,8 +286,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Controles</h2>
-          <p>Checkbox y radio son nativos, tematizados con <code>accent-color</code>. El switch es un checkbox con <code>role="switch"</code> (semántica correcta + look de toggle).</p>
+          <h2 data-i18n="forms.controlsTitle"></h2>
+          <p data-i18n="forms.controlsDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="stack" style="--stack-gap: var(--space-2)">
@@ -151,15 +305,26 @@
 
   <template id="sec-containers">
     <div class="section">
-      <header class="section-head">
-        <h1>Contenedores y datos</h1>
-        <p>Estructuras que agrupan contenido. Donde no hay elemento semántico, una sola marca en la raíz.</p>
-      </header>
+      <section class="hero hero-section" data-size="compact">
+        <div class="hero-copy">
+          <h1 data-i18n="containers.heroTitle"></h1>
+          <p data-i18n="containers.heroLead"></p>
+        </div>
+        <div class="hero-demo" inert>
+          <table data-zebra>
+            <thead><tr><th>Cliente</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>Acme</td><td><span class="badge" data-variant="success">Pago</span></td></tr>
+              <tr><td>Globex</td><td><span class="badge" data-variant="warning">Pendiente</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Card</h2>
-          <p>No existe un elemento "card", así que la marca es <code>.card</code>. Todo lo interno se estiliza por su elemento. Con imagen, pasa a 2 columnas según su <em>propio</em> ancho (container query), no el de la pantalla.</p>
+          <h2 data-i18n="containers.cardTitle"></h2>
+          <p data-i18n="containers.cardDesc"></p>
         </div>
         <div class="demo-preview">
           <article class="card" style="max-inline-size: 26rem">
@@ -176,8 +341,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Tabla</h2>
-          <p>El <code>&lt;table&gt;</code> es la marca. Comportamientos opt-in por intención: <code>data-zebra</code>, <code>data-sticky</code>, y <code>data-numeric</code> en celdas numéricas.</p>
+          <h2 data-i18n="containers.tableTitle"></h2>
+          <p data-i18n="containers.tableDesc"></p>
         </div>
         <div class="demo-preview">
           <table data-zebra>
@@ -194,8 +359,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Accordion</h2>
-          <p>Construido sobre <code>&lt;details&gt;</code>. El atributo nativo <code>name</code> lo hace exclusivo (uno abierto a la vez) sin una línea de JS.</p>
+          <h2 data-i18n="containers.accordionTitle"></h2>
+          <p data-i18n="containers.accordionDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="stack" style="--stack-gap: var(--space-2)">
@@ -208,8 +373,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Dialog</h2>
-          <p>El <code>&lt;dialog&gt;</code> nativo: <code>showModal()</code> + <code>::backdrop</code> + animación de entrada con <code>@starting-style</code>. Sin librería de posicionamiento.</p>
+          <h2 data-i18n="containers.dialogTitle"></h2>
+          <p data-i18n="containers.dialogDesc"></p>
         </div>
         <div class="demo-preview">
           <button data-variant="primary" data-ref="openDialog">Abrir dialog</button>
@@ -229,15 +394,35 @@
 
   <template id="sec-nav">
     <div class="section">
-      <header class="section-head">
-        <h1>Navegación</h1>
-        <p>Componentes para moverse. <code>&lt;nav&gt;</code> es ambiguo, así que cada uno lleva su marca propia.</p>
-      </header>
+      <section class="hero hero-section" data-size="compact">
+        <div class="hero-copy">
+          <h1 data-i18n="navsec.heroTitle"></h1>
+          <p data-i18n="navsec.heroLead"></p>
+        </div>
+        <div class="hero-demo" inert>
+          <nav aria-label="Breadcrumb">
+            <ol class="breadcrumb">
+              <li><a>Inicio</a></li>
+              <li><a>Navegación</a></li>
+              <li><a aria-current="page">Tabs</a></li>
+            </ol>
+          </nav>
+          <nav aria-label="Pagination">
+            <ul class="pagination">
+              <li><a rel="prev" aria-label="Anterior">‹</a></li>
+              <li><a>1</a></li>
+              <li><a aria-current="page">2</a></li>
+              <li><a>3</a></li>
+              <li><a rel="next" aria-label="Siguiente">›</a></li>
+            </ul>
+          </nav>
+        </div>
+      </section>
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Tabs</h2>
-          <p>El estilo es 100% por rol ARIA (<code>[role="tab"]</code>); alternar <code>aria-selected</code> y <code>[hidden]</code> es comportamiento — acá lo maneja una View de Lumen.</p>
+          <h2 data-i18n="navsec.tabsTitle"></h2>
+          <p data-i18n="navsec.tabsDesc"></p>
         </div>
         <div class="demo-preview">
           <div data-ref="tabs">
@@ -256,8 +441,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Menu (dropdown)</h2>
-          <p>Disclosure sobre <code>&lt;details&gt;</code>, marca <code>details.menu</code>. Abre/cierra sin JS (no tiene light-dismiss; para eso, Popover API).</p>
+          <h2 data-i18n="navsec.menuTitle"></h2>
+          <p data-i18n="navsec.menuDesc"></p>
         </div>
         <div class="demo-preview">
           <details class="menu">
@@ -274,8 +459,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Breadcrumb y pagination</h2>
-          <p>Marca en la lista (<code>.breadcrumb</code> / <code>.pagination</code>), envueltas en <code>&lt;nav aria-label&gt;</code>. La página actual usa <code>aria-current</code>.</p>
+          <h2 data-i18n="navsec.breadcrumbTitle"></h2>
+          <p data-i18n="navsec.breadcrumbDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="stack" style="--stack-gap: var(--space-3)">
@@ -304,15 +489,26 @@
 
   <template id="sec-feedback">
     <div class="section">
-      <header class="section-head">
-        <h1>Feedback y estado</h1>
-        <p>Comunicar estado al usuario. El tono se elige por intención (<code>data-variant</code>), derivado de los tokens de estado.</p>
-      </header>
+      <section class="hero hero-section" data-size="compact">
+        <div class="hero-copy">
+          <h1 data-i18n="feedback.heroTitle"></h1>
+          <p data-i18n="feedback.heroLead"></p>
+        </div>
+        <div class="hero-demo" inert>
+          <div class="alert" data-variant="success" role="status"><strong>Listo</strong><p>Se guardaron los cambios.</p></div>
+          <div class="cluster">
+            <span class="badge" data-variant="accent">Beta</span>
+            <span class="badge" data-variant="success">Pago</span>
+            <span class="badge" data-variant="warning">Pendiente</span>
+          </div>
+          <progress value="0.6"></progress>
+        </div>
+      </section>
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Alerts</h2>
-          <p>Callout en bloque. Cada variante intercambia solo una variable local <code>--tone</code>; el resto de la regla la lee.</p>
+          <h2 data-i18n="feedback.alertsTitle"></h2>
+          <p data-i18n="feedback.alertsDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="stack" style="--stack-gap: var(--space-2)">
@@ -327,8 +523,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Badges y chips</h2>
-          <p>Pill inline (<code>.badge</code>) y tag descartable (<code>.chip</code>). El tono del badge sale de un solo token con <code>color-mix()</code>.</p>
+          <h2 data-i18n="feedback.badgesTitle"></h2>
+          <p data-i18n="feedback.badgesDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="cluster">
@@ -344,8 +540,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Tooltip y toast</h2>
-          <p>Tooltip por <code>[data-tooltip]</code> (hint con <code>::after</code> + <code>attr()</code>). El toast se anima al insertarse con <code>@starting-style</code>; aparecerlo es comportamiento (Lumen).</p>
+          <h2 data-i18n="feedback.tooltipTitle"></h2>
+          <p data-i18n="feedback.tooltipDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="cluster">
@@ -358,8 +554,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Progress, meter y spinner</h2>
-          <p>Elementos nativos <code>&lt;progress&gt;</code> y <code>&lt;meter&gt;</code> (bandas coloreadas con tokens de estado). El spinner sigue <code>currentColor</code>.</p>
+          <h2 data-i18n="feedback.progressTitle"></h2>
+          <p data-i18n="feedback.progressDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="stack" style="--stack-gap: var(--space-3); max-inline-size: 28rem">
@@ -376,8 +572,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Skeleton</h2>
-          <p>Placeholder de carga (<code>.skeleton</code>). El shimmer se pausa solo bajo <code>prefers-reduced-motion</code>.</p>
+          <h2 data-i18n="feedback.skeletonTitle"></h2>
+          <p data-i18n="feedback.skeletonDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="card" style="max-inline-size: 22rem; box-shadow: none">
@@ -395,15 +591,29 @@
 
   <template id="sec-primitives">
     <div class="section">
-      <header class="section-head">
-        <h1>Primitivas</h1>
-        <p>Piezas chicas y reutilizables.</p>
-      </header>
+      <section class="hero hero-section" data-size="compact">
+        <div class="hero-copy">
+          <h1 data-i18n="primitives.heroTitle"></h1>
+          <p data-i18n="primitives.heroLead"></p>
+        </div>
+        <div class="hero-demo" inert>
+          <div class="cluster">
+            <span class="avatar">HS</span>
+            <span class="avatar" style="--avatar-size: 2.5rem">AB</span>
+            <span class="avatar" style="--avatar-size: 2rem; --accent: #16a34a">JD</span>
+          </div>
+          <p style="margin: 0">Guardá con <kbd>Ctrl</kbd> + <kbd>S</kbd></p>
+          <div class="cluster">
+            <span class="badge">Nuevo</span>
+            <span class="chip">Diseño</span>
+          </div>
+        </div>
+      </section>
 
       <div class="demo">
         <div class="demo-head">
-          <h2>Avatar</h2>
-          <p>Imagen o iniciales (<code>.avatar</code>). Tamaño por la perilla <code>--avatar-size</code>; la fuente escala con <code>calc()</code>.</p>
+          <h2 data-i18n="primitives.avatarTitle"></h2>
+          <p data-i18n="primitives.avatarDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="cluster">
@@ -417,8 +627,8 @@
 
       <div class="demo">
         <div class="demo-head">
-          <h2>kbd y divider</h2>
-          <p>Tecla (<code>&lt;kbd&gt;</code>, anidable para combos) y regla con label centrado opcional (<code>.divider</code>).</p>
+          <h2 data-i18n="primitives.kbdTitle"></h2>
+          <p data-i18n="primitives.kbdDesc"></p>
         </div>
         <div class="demo-preview">
           <div class="stack" style="--stack-gap: var(--space-3)">
@@ -432,12 +642,162 @@
     </div>
   </template>
 
+  <template id="sec-guide">
+    <div class="section guide">
+      <section class="hero hero-section" data-size="compact">
+        <div class="hero-copy">
+          <h1 data-i18n="guide.heroTitle"></h1>
+          <p data-i18n="guide.heroLead"></p>
+        </div>
+        <pre class="demo-code" data-lang="css" inert><code>@layer components {
+  @scope (.stat) {
+    :scope { /* root box   */ }
+    p      { /* the label  */ }
+    strong { /* the value  */ }
+  }
+}</code></pre>
+      </section>
+
+      <section class="home-block">
+        <blockquote class="rule" data-i18n="guide.rule"></blockquote>
+        <p style="color: var(--text-muted)" data-i18n="guide.ruleNote"></p>
+      </section>
+
+      <section class="home-block">
+        <header class="block-head">
+          <h2 data-i18n="guide.stepsTitle"></h2>
+          <p data-i18n="guide.stepsSub"></p>
+        </header>
+
+        <ol class="steps">
+          <li class="step">
+            <h3 data-i18n="guide.s1Title"></h3>
+            <p data-i18n="guide.s1Desc"></p>
+            <table>
+              <thead><tr><th data-i18n="guide.thIf"></th><th data-i18n="guide.thUse"></th><th data-i18n="guide.thEx"></th></tr></thead>
+              <tbody>
+                <tr><td data-i18n="guide.s1r1If"></td><td data-i18n="guide.s1r1Use"></td><td><code>button</code>, <code>dialog</code>, <code>table</code></td></tr>
+                <tr><td data-i18n="guide.s1r2If"></td><td data-i18n="guide.s1r2Use"></td><td><code>[role="tablist"]</code></td></tr>
+                <tr><td data-i18n="guide.s1r3If"></td><td data-i18n="guide.s1r3Use"></td><td><code>[data-tooltip]</code></td></tr>
+                <tr><td data-i18n="guide.s1r4If"></td><td data-i18n="guide.s1r4Use"></td><td><code>details.menu</code></td></tr>
+                <tr><td data-i18n="guide.s1r5If"></td><td data-i18n="guide.s1r5Use"></td><td><code>.card</code>, <code>.badge</code></td></tr>
+              </tbody>
+            </table>
+            <p data-i18n="guide.s1Litmus"></p>
+          </li>
+
+          <li class="step">
+            <h3 data-i18n="guide.s2Title"></h3>
+            <p data-i18n="guide.s2Desc"></p>
+            <pre class="demo-code" data-lang="css"><code>@layer components {
+  @scope (.stat) {
+    :scope { /* la caja raíz */ }
+    p      { /* la etiqueta, por elemento */ }
+    strong { /* el valor */ }
+  }
+}</code></pre>
+          </li>
+
+          <li class="step">
+            <h3 data-i18n="guide.s3Title"></h3>
+            <p data-i18n="guide.s3Desc"></p>
+          </li>
+
+          <li class="step">
+            <h3 data-i18n="guide.s4Title"></h3>
+            <p data-i18n="guide.s4Desc1"></p>
+            <pre class="demo-code" data-lang="css"><code>:scope                         { border-inline-start: 4px solid var(--tone); }
+:scope[data-variant="success"] { --tone: var(--success); }
+:scope[data-variant="danger"]  { --tone: var(--danger);  }</code></pre>
+            <p data-i18n="guide.s4Desc2"></p>
+          </li>
+
+          <li class="step">
+            <h3 data-i18n="guide.s5Title"></h3>
+            <p data-i18n="guide.s5Desc"></p>
+            <pre class="demo-code" data-lang="css"><code>@scope (.chip) {
+  :scope button { appearance: none; border: 0; background: none; }
+}</code></pre>
+          </li>
+
+          <li class="step">
+            <h3 data-i18n="guide.s6Title"></h3>
+            <p data-i18n="guide.s6Desc"></p>
+          </li>
+
+          <li class="step">
+            <h3 data-i18n="guide.s7Title"></h3>
+            <p data-i18n="guide.s7Desc"></p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="home-block">
+        <header class="block-head">
+          <h2 data-i18n="guide.exTitle"></h2>
+          <p data-i18n="guide.exSub"></p>
+        </header>
+        <div class="demo">
+          <div class="demo-head"><h2 style="border: 0; padding: 0" data-i18n="guide.exLive"></h2></div>
+          <div class="demo-preview">
+            <div class="stat" data-trend="up">
+              <p>Ingresos</p>
+              <strong>$12.4k</strong>
+              <small>+8.2%</small>
+            </div>
+          </div>
+          <pre class="demo-code"><code></code></pre>
+        </div>
+        <div style="margin-block-start: var(--space-4)">
+          <h3 style="margin-block-end: var(--space-2)">components/stat.css</h3>
+          <pre class="demo-code" data-lang="css"><code>@layer components {
+  @scope (.stat) {
+    :scope {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      padding: var(--space-4);
+      background: var(--surface);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius);
+    }
+    p      { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+    strong { font-size: var(--text-xl); font-weight: 700; line-height: 1; }
+    small  { color: var(--text-muted); }
+
+    :scope[data-trend="up"]   small { color: var(--success); }
+    :scope[data-trend="down"] small { color: var(--danger); }
+  }
+}</code></pre>
+        </div>
+        <p style="color: var(--text-muted); margin-block-start: var(--space-4)" data-i18n="guide.exNote"></p>
+      </section>
+
+      <section class="home-block">
+        <header class="block-head"><h2 data-i18n="guide.checklistTitle"></h2></header>
+        <ul class="checklist">
+          <li data-i18n="guide.c1"></li>
+          <li data-i18n="guide.c2"></li>
+          <li data-i18n="guide.c3"></li>
+          <li data-i18n="guide.c4"></li>
+          <li data-i18n="guide.c5"></li>
+          <li data-i18n="guide.c6"></li>
+          <li data-i18n="guide.c7"></li>
+          <li data-i18n="guide.c8"></li>
+        </ul>
+      </section>
+    </div>
+  </template>
+
   <template id="sec-404">
     <div class="section">
-      <header class="section-head">
+      <section class="hero" data-align="center">
         <h1>404</h1>
-        <p>Esa sección no existe. <a href="#/">Volver al inicio</a>.</p>
-      </header>
+        <p data-i18n="err.desc"></p>
+        <div class="cluster" style="justify-content: center">
+          <a href="#/" data-button data-variant="primary" data-i18n="err.back"></a>
+        </div>
+      </section>
     </div>
   </template>
 
@@ -452,43 +812,43 @@
             <button data-variant="ghost" data-ref="close" aria-label="Cerrar">×</button>
           </span>
         </header>
-        <p class="drawer-note">Mové una perilla y se reconfigura <em>todo</em> el sitio — esa es la tesis de scc. Se aplica en <code>:root</code> con <code>setProperty</code>.</p>
+        <p class="drawer-note" data-i18n="drawer.note"></p>
 
         <div class="drawer-controls" data-ref="controls">
           <label class="ctl">
-            <span class="ctl-label">Acento <output data-out="--accent"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.accent"></span> <output data-out="--accent"></output></span>
             <input type="color" data-token="--accent" value="#3b6cf2">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Tono de grises <output data-out="--neutral-hue"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.grayHue"></span> <output data-out="--neutral-hue"></output></span>
             <input type="range" data-token="--neutral-hue" min="0" max="360" step="1" value="264">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Croma de grises <output data-out="--neutral-chroma"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.grayChroma"></span> <output data-out="--neutral-chroma"></output></span>
             <input type="range" data-token="--neutral-chroma" data-unit="%" min="0" max="12" step="1" value="5">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Radio <output data-out="--radius"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.radius"></span> <output data-out="--radius"></output></span>
             <input type="range" data-token="--radius" data-unit="px" min="0" max="24" step="1" value="8">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Razón tipográfica <output data-out="--ratio"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.ratio"></span> <output data-out="--ratio"></output></span>
             <input type="range" data-token="--ratio" min="1.1" max="1.4" step="0.01" value="1.25">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Unidad de espacio <output data-out="--space-base"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.spaceUnit"></span> <output data-out="--space-base"></output></span>
             <input type="range" data-token="--space-base" data-unit="rem" min="0.2" max="0.4" step="0.01" value="0.25">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Grosor de borde <output data-out="--border-width"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.borderWidth"></span> <output data-out="--border-width"></output></span>
             <input type="range" data-token="--border-width" data-unit="px" min="1" max="4" step="1" value="1">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Duración <output data-out="--dur"></output></span>
+            <span class="ctl-label"><span data-i18n="drawer.duration"></span> <output data-out="--dur"></output></span>
             <input type="range" data-token="--dur" data-unit="ms" min="0" max="400" step="25" value="150">
           </label>
           <label class="ctl">
-            <span class="ctl-label">Tipografía</span>
+            <span class="ctl-label" data-i18n="drawer.font"></span>
             <select data-token="--font-sans">
               <option value="system-ui, sans-serif">Sans (sistema)</option>
               <option value="Georgia, 'Times New Roman', serif">Serif</option>

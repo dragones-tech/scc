@@ -11,3 +11,9 @@
   from { background-position: 100% 0; }
   to   { background-position: 0 0; }
 }
+
+/* hero's decorative glow drifts slowly — referenced by components/hero.css */
+@keyframes scc-hero-drift {
+  from { translate: 0 0;        scale: 1;    }
+  to   { translate: -8% 12%;    scale: 1.25; }
+}

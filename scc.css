@@ -19,6 +19,7 @@
 @import url("animations.css");  /* shared @keyframes (no layer; referenced by components) */
 
 @import url("components/button.css");
+@import url("components/hero.css");
 @import url("components/card.css");
 @import url("components/input.css");
 @import url("components/select.css");

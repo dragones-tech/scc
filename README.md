@@ -52,14 +52,14 @@ Six cascade layers, from lowest to highest priority:
 
 ## Components
 
-27 components, each marked by the most semantic selector that identifies it. A few
+28 components, each marked by the most semantic selector that identifies it. A few
 need a little JS (or your view layer) for behavior; everything else is pure CSS.
 Full reference in [`llms-full.txt`](./llms-full.txt).
 
 | Group | Components |
 |---|---|
 | **Form & input** | `input`/`textarea`, `select`, `field`, checkbox/radio, `switch`, `button` |
-| **Containers & data** | `card`, `table`, `accordion`, `dialog` |
+| **Layout & containers** | `hero`, `card`, `table`, `accordion`, `dialog` |
 | **Navigation** | `navbar`, `tabs`, `menu`, `breadcrumb`, `pagination` |
 | **Feedback & status** | `alert`, `toast`, `badge`, `chip`, `tooltip`, `progress`, `meter`, `skeleton`, `spinner` |
 | **Primitives** | `avatar`, `kbd`, `divider` |

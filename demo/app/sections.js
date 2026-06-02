@@ -1,5 +1,6 @@
 // @ts-check
 import { View } from 'lumenjs';
+import { applyI18n } from './i18n.js';
 
 /**
  * Turn a live preview element into clean, displayable HTML: strip the demo's
@@ -47,15 +48,44 @@ function highlight(code) {
 }
 
 /**
+ * Tiny CSS highlighter for hand-written snippets (the guide). Operates on
+ * already-escaped text and wraps tokens in the same <span class="tok-*"> classes
+ * as the HTML highlighter, so CSS code re-themes with scc too.
+ * @param {string} escaped  text with <,>,& already turned into entities
+ * @returns {string}
+ */
+function highlightCSS(escaped) {
+  return escaped.replace(
+    /(\/\*[\s\S]*?\*\/)|("[^"]*"|'[^']*')|(@[\w-]+)|(--[\w-]+)|(\.[\w-]+|#[\w-]+|::?[\w-]+)|([a-zA-Z-]+)(?=\s*:(?!:))|([{}();,]|&gt;)/g,
+    (m, comment, str, at, custom, sel, prop, punct) => {
+      if (comment) return `<span class="tok-comment">${comment}</span>`;
+      if (str)     return `<span class="tok-str">${str}</span>`;
+      if (at)      return `<span class="tok-tag">${at}</span>`;
+      if (custom)  return `<span class="tok-attr">${custom}</span>`;
+      if (sel)     return `<span class="tok-tag">${sel}</span>`;
+      if (prop)    return `<span class="tok-attr">${prop}</span>`;
+      if (punct)   return `<span class="tok-punct">${punct}</span>`;
+      return m;
+    },
+  );
+}
+
+/**
  * Base for every section. On mount it fills each module's <code> from its live
- * preview, then runs the section's own interactive wiring (enhance).
+ * preview, colorizes any hand-written CSS snippets, then runs the section's own
+ * interactive wiring (enhance).
  */
 class Section extends View {
   onMount() {
+    applyI18n(this.el, this.signal);   // fill [data-i18n] prose, re-fill on locale change
     for (const block of this.el.querySelectorAll('.demo')) {
       const preview = block.querySelector('.demo-preview');
       const code = block.querySelector('.demo-code > code');
       if (preview && code) code.innerHTML = highlight(formatHTML(preview));
+    }
+    // Hand-written CSS snippets (e.g. the guide): colorize from their text.
+    for (const code of this.el.querySelectorAll('pre[data-lang="css"] > code')) {
+      code.innerHTML = highlightCSS(esc(code.textContent));
     }
     this.enhance();
   }
@@ -115,4 +145,9 @@ export class Feedback extends Section {
 
 export class Primitives extends Section { static template = '#sec-primitives'; }
 
-export class NotFound extends View { static template = '#sec-404'; }
+export class Guide extends Section { static template = '#sec-guide'; }
+
+export class NotFound extends View {
+  static template = '#sec-404';
+  onMount() { applyI18n(this.el, this.signal); }
+}

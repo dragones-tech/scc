@@ -1,5 +1,6 @@
 // @ts-check
 import { View, Model } from 'lumenjs';
+import { applyI18n } from './i18n.js';
 
 /**
  * The token customizer drawer. A Lumen Model holds the live token values; every
@@ -20,6 +21,7 @@ export class Customizer extends View {
   }
 
   onMount() {
+    applyI18n(this.el, this.signal);   // drawer note + control labels
     const controls = this.ui.controls;
 
     // Seed the model + outputs from the controls' authored values (no emit on seed).
