@@ -31,7 +31,13 @@ It's the styling layer of a no-magic stack alongside
 <link rel="stylesheet" href="scc.css">
 ```
 
-No npm, no compiling. Open `demo/index.html` to see it running.
+No npm, no compiling. The demo under `demo/` is a small SPA built with
+[Lumen](https://github.com/dragones-tech/lumen) (vendored, no build) that showcases
+the whole stack — run it from a static server (ES modules need HTTP, not `file://`):
+
+```sh
+python3 -m http.server   # then open http://localhost:8000/demo/
+```
 
 ## Architecture
 
@@ -46,13 +52,13 @@ Six cascade layers, from lowest to highest priority:
 
 ## Components
 
-26 components, each marked by the most semantic selector that identifies it. A few
+27 components, each marked by the most semantic selector that identifies it. A few
 need a little JS (or your view layer) for behavior; everything else is pure CSS.
 Full reference in [`llms-full.txt`](./llms-full.txt).
 
 | Group | Components |
 |---|---|
-| **Form & input** | `input`/`textarea`/`select`, `field`, checkbox/radio, `switch`, `button` |
+| **Form & input** | `input`/`textarea`, `select`, `field`, checkbox/radio, `switch`, `button` |
 | **Containers & data** | `card`, `table`, `accordion`, `dialog` |
 | **Navigation** | `navbar`, `tabs`, `menu`, `breadcrumb`, `pagination` |
 | **Feedback & status** | `alert`, `toast`, `badge`, `chip`, `tooltip`, `progress`, `meter`, `skeleton`, `spinner` |

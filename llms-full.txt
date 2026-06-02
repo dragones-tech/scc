@@ -160,13 +160,14 @@ copy: components/_template.css. The conventions in brief:
 --------------------------------------------------------------------------------
 ## Component catalog
 
-26 components. Marker = the selector that identifies the component. "Behavior"
+27 components. Marker = the selector that identifies the component. "Behavior"
 means a small amount of JS (or your view layer) is needed; everything else is
 pure CSS. Variants are [data-variant] unless noted; states are native pseudo-classes.
 
 FORM & INPUT
-  input        input(text-like) / textarea / select   Global control appearance.
+  input        input(text-like) / textarea             Global control appearance.
                                                        Excludes checkbox/radio/range.
+  select       select                                  Native select + custom caret (appearance:none).
   field        .field                                  Layout only: label+control+hint.
   choice       input[type=checkbox] / [type=radio]     Native, themed via accent-color.
   switch       input[role="switch"]                    Checkbox as a toggle.
