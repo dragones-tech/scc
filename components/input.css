@@ -1,13 +1,13 @@
-/* input, textarea, select — native form controls, styled globally so a standalone
-   control looks right too. The element IS the marker (checkbox/radio are excluded:
-   they live in choice.css, the switch in switch.css). For label + hint layout,
-   wrap in .field — that handles only the stacking, this handles the appearance.
+/* input & textarea — native text controls, styled globally so a standalone control
+   looks right too. The element IS the marker (checkbox/radio → choice.css, the
+   switch → switch.css, the <select> → select.css for its custom caret). For label +
+   hint layout, wrap in .field — that handles only the stacking, this the appearance.
 
    In a .field (a column flex) controls stretch on their own, so no width is forced
    here; a standalone control keeps its intrinsic size. */
 
 @layer components {
-  @scope (input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select) {
+  @scope (input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea) {
     :scope {
       padding: var(--space-2) var(--space-3);
       background: var(--bg);
