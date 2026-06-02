@@ -160,7 +160,7 @@ copy: components/_template.css. The conventions in brief:
 --------------------------------------------------------------------------------
 ## Component catalog
 
-28 components. Marker = the selector that identifies the component. "Behavior"
+29 components. Marker = the selector that identifies the component. "Behavior"
 means a small amount of JS (or your view layer) is needed; everything else is
 pure CSS. Variants are [data-variant] unless noted; states are native pseudo-classes.
 
@@ -206,6 +206,8 @@ PRIMITIVES
   avatar       .avatar                                 Image or initials. Size: --avatar-size.
   kbd          kbd                                     Keycap. Nestable for combos.
   divider      .divider                                Rule with optional centered label.
+  icon         [data-icon]                             CSS-mask glyph over currentColor.
+                                                        Size: --icon-size. No font, no build.
 
 --------------------------------------------------------------------------------
 ## Themes — the theme is the starting point

@@ -56,7 +56,7 @@ Six cascade layers, from lowest to highest priority:
 
 ## Components
 
-28 components, each marked by the most semantic selector that identifies it. A few
+29 components, each marked by the most semantic selector that identifies it. A few
 need a little JS (or your view layer) for behavior; everything else is pure CSS.
 Full reference in [`llms-full.txt`](./llms-full.txt).
 
@@ -66,7 +66,7 @@ Full reference in [`llms-full.txt`](./llms-full.txt).
 | **Layout & containers** | `hero`, `card`, `table`, `accordion`, `dialog` |
 | **Navigation** | `navbar`, `tabs`, `menu`, `breadcrumb`, `pagination` |
 | **Feedback & status** | `alert`, `toast`, `badge`, `chip`, `tooltip`, `progress`, `meter`, `skeleton`, `spinner` |
-| **Primitives** | `avatar`, `kbd`, `divider` |
+| **Primitives** | `avatar`, `kbd`, `divider`, `icon` |
 
 The marker is the most semantic thing that *unambiguously* identifies the
 component: the element itself when it maps 1:1 (`<button>`, `<dialog>`, `<table>`),
