@@ -1,0 +1,24 @@
+/* themes/sunset — EXAMPLE of "forking the contract".
+   Demonstrates the motto: with the SAME knobs and WITHOUT touching components,
+   the site looks completely different. Scoped to [data-theme="sunset"] so it can
+   coexist with the default; drop the selector and put it on :root to make it global.
+
+   Compare with theme.css: only values change, not structure. */
+
+@layer theme {
+  [data-theme="sunset"] {
+    --accent:    #e8590c;   /* warm orange instead of blue */
+    --accent-fg: #fff7ed;
+    --danger:    #c01c28;
+
+    --neutral-hue:    40;   /* warm grays (sand) instead of cool */
+    --neutral-chroma: 8%;
+
+    --font-sans: Georgia, "Times New Roman", serif;  /* editorial identity */
+    --ratio:     1.333;     /* more dramatic scale */
+
+    --radius:       2px;    /* nearly square corners, print look */
+    --border-width: 2px;    /* bold borders */
+    --shadow: none;         /* no shadows: flat aesthetic */
+  }
+}
