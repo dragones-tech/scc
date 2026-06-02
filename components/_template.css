@@ -1,0 +1,47 @@
+/* ════════════════════════════════════════════════════════════════
+   COMPONENT TEMPLATE — copy this file to components/<name>.css and edit.
+   Full guide: GUIDE.md (worked example + checklist).
+
+   1. MARKER: most semantic UNAMBIGUOUS option, in order —
+        element (1:1)        → button, dialog, table, input[type]…
+        native role          → [role="tablist"]
+        intent attribute     → [data-tooltip]
+        element + class      → details.menu   (when the element is ambiguous)
+        one class on root    → .card          (when no element fits)
+      Litmus: would styling the bare element catch unrelated markup? Then use a class.
+
+   2. Style :scope (the root) and the internals by element/role — NEVER per-element
+      classes. Nothing in the HTML should describe appearance.
+   3. Every value is a token: var(--…). No raw hex / px / ms.
+   4. Variants → [data-variant] (intent). States → native pseudo-classes.
+   5. Inner <button>/<a> carry the scc base → override with a :scope-prefixed selector.
+   6. @container over @media; @keyframes go in animations.css.
+   7. Register: add @import in scc.css, then a section in demo/index.html.
+   ════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  @scope (.your-component /* ← the marker from step 1 */) {
+    :scope {
+      /* the root box — layout + surface, all via tokens */
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background: var(--surface);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    /* internals — by element/role, no classes */
+    /* h2 { font-size: var(--text-lg); } */
+    /* p  { color: var(--text-muted); margin: 0; } */
+
+    /* variants — intent attribute; ideally swap ONE local var the rule reads */
+    /* :scope[data-variant="primary"] { --tone: var(--accent); } */
+
+    /* states — native pseudo-classes, never .is-active */
+    /* :scope:hover { … }  :scope[aria-current] { … } */
+
+    /* contains a <button>/<a>? override the base with :scope (see chip.css) */
+    /* :scope button { appearance: none; border: 0; background: none; } */
+  }
+}
