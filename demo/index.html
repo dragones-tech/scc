@@ -3,343 +3,503 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>scc — demo</title>
-  <!-- Sin build: una hoja, importa todo en orden de capas -->
+  <title>scc — demo (Lumen)</title>
+
+  <!-- scc: the whole point — one stylesheet, no build -->
   <link rel="stylesheet" href="../scc.css">
-  <!-- Tema de ejemplo (fork del contrato), scopeado a [data-theme="sunset"] -->
+  <!-- example theme (forked contract), available from the theme selector -->
   <link rel="stylesheet" href="../themes/sunset.css">
+  <!-- demo chrome (app shell layout) -->
+  <link rel="stylesheet" href="app.css">
+
+  <!-- Lumen via native ES modules, vendored & pinned (no CDN, no build) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "lumenjs": "./vendor/lumen/src/index.js",
+      "lumenjs/": "./vendor/lumen/src/"
+    }
+  }
+  </script>
 </head>
 <body>
-  <nav class="navbar">
-    <a href="#" data-brand>scc</a>
-    <a href="#" aria-current="page">Demo</a>
-    <a href="https://github.com/dragones-tech">GitHub</a>
-    <span data-nav-end><button data-variant="primary">Empezar</button></span>
-  </nav>
+  <div id="app"></div>
 
-  <main class="center stack" style="padding-block: var(--space-8)">
+  <!-- ══ Templates: markup lives here; behavior in app/*.js; code panels auto-filled ══ -->
 
-    <header class="cluster" style="justify-content: space-between">
-      <div class="stack" style="--stack-gap: var(--space-2)">
-        <h1>scc</h1>
-        <p style="color: var(--text-muted); margin: 0">
-          Scoped Cascade CSS · el tema es el punto de partida.
-        </p>
-      </div>
-      <!-- Dos ejes ORTOGONALES, controles separados -->
-      <div class="cluster">
-        <!-- EJE 1 · MODO: solo cambia color-scheme; light-dark() hace el resto -->
-        <button id="mode-toggle" data-variant="ghost" aria-label="Cambiar modo de luz">🌗 Modo: auto</button>
-        <!-- EJE 2 · TEMA: identidad de marca, componible con cualquier modo -->
-        <p class="field">
-          <label for="theme-select" class="visually-hidden">Tema</label>
-          <select id="theme-select">
+  <template id="layout">
+    <div class="shell">
+      <nav class="navbar">
+        <a href="#/" data-brand>scc</a>
+        <span data-nav-end>
+          <button data-variant="ghost" data-ref="modeBtn" aria-label="Cambiar modo de luz">🌗 Modo: auto</button>
+          <select data-ref="themeSel" aria-label="Tema">
             <option value="">Tema: default</option>
             <option value="sunset">Tema: sunset</option>
           </select>
+          <button data-variant="primary" data-ref="customizeBtn">🎛 Tokens</button>
+        </span>
+      </nav>
+      <div class="shell-body">
+        <aside class="menu" data-ref="menu">
+          <a href="#/">Inicio</a>
+          <a href="#/forms">Formularios</a>
+          <a href="#/containers">Contenedores</a>
+          <a href="#/nav">Navegación</a>
+          <a href="#/feedback">Feedback</a>
+          <a href="#/primitives">Primitivas</a>
+        </aside>
+        <main class="content" data-ref="outlet"></main>
+      </div>
+    </div>
+  </template>
+
+  <template id="sec-home">
+    <div class="section">
+      <header class="section-head">
+        <h1>scc + Lumen</h1>
+        <p>
+          Demo construida como SPA con <strong>Lumen</strong> (Views, Region, Router) y estilada
+          con <strong>scc</strong>. Mismo principio: primitivas nativas, sin build, todo auditable.
+          Cada módulo muestra el componente vivo y el código real que lo produce. Arriba a la
+          derecha cambiás <strong>modo</strong> (luz) y <strong>tema</strong> (identidad) — dos ejes que componen.
         </p>
-      </div>
-    </header>
-
-    <hr>
-
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Botones</h2>
-      <div class="cluster">
-        <button>Default</button>
-        <button data-variant="primary">Guardar</button>
-        <button data-variant="ghost">Cancelar</button>
-        <button disabled>Deshabilitado</button>
-        <a href="#" data-button data-variant="primary">Soy un enlace</a>
-      </div>
-    </section>
-
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Cards</h2>
-      <p style="color: var(--text-muted); margin: 0">
-        La card de abajo tiene imagen: al ensancharse pasa a 2 columnas sola
-        (container query, sin media query global).
-      </p>
+      </header>
       <div class="cluster" style="--cluster-gap: var(--space-4); align-items: stretch">
-        <article class="card" style="flex: 1 1 22rem">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%233b6cf2'/%3E%3C/svg%3E" alt="">
+        <article class="card" style="flex: 1 1 16rem"><h2>Sin build</h2><p>scc es CSS plano; Lumen son ES modules. Llegan al browser tal cual.</p></article>
+        <article class="card" style="flex: 1 1 16rem"><h2>Sin magia</h2><p>@scope, @layer, custom properties, Router sobre hashchange.</p></article>
+        <article class="card" style="flex: 1 1 16rem"><h2>Componen</h2><p>Lumen renderiza en Light DOM, así cualquier hoja de scc aplica directo.</p></article>
+      </div>
+    </div>
+  </template>
+
+  <template id="sec-forms">
+    <div class="section">
+      <header class="section-head">
+        <h1>Formularios</h1>
+        <p>Controles e inputs nativos, estilados globalmente. El HTML dice qué es; la variante se pide por intención.</p>
+      </header>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Botones</h2>
+          <p>El <code>&lt;button&gt;</code> ya viene estilado: es la marca. Las variantes se piden con <code>data-variant</code>, nunca con clases de apariencia. Un <code>&lt;a&gt;</code> se vuelve botón con <code>data-button</code>.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="cluster">
+            <button>Default</button>
+            <button data-variant="primary">Guardar</button>
+            <button data-variant="ghost">Cancelar</button>
+            <button disabled>Deshabilitado</button>
+            <a href="#/forms" data-button data-variant="primary">Enlace-botón</a>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Campos</h2>
+          <p><code>.field</code> apila label + control + ayuda; la apariencia del control vive en <code>input.css</code>. El estado <code>:invalid</code> sale de las pseudo-clases nativas, sin clases extra.</p>
+        </div>
+        <div class="demo-preview">
+          <form class="stack" style="--stack-gap: var(--space-4); max-inline-size: 24rem">
+            <p class="field">
+              <label for="name">Nombre</label>
+              <input id="name" type="text" placeholder="Tu nombre">
+            </p>
+            <p class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email" placeholder="tu@correo.com" required>
+              <small>Escribí algo inválido para ver :invalid.</small>
+            </p>
+            <p class="field">
+              <label for="country">País</label>
+              <select id="country">
+                <option>Argentina</option>
+                <option>México</option>
+                <option>España</option>
+              </select>
+            </p>
+            <div class="cluster">
+              <button type="submit" data-variant="primary">Enviar</button>
+              <button type="reset" data-variant="ghost">Limpiar</button>
+            </div>
+          </form>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Controles</h2>
+          <p>Checkbox y radio son nativos, tematizados con <code>accent-color</code>. El switch es un checkbox con <code>role="switch"</code> (semántica correcta + look de toggle).</p>
+        </div>
+        <div class="demo-preview">
           <div class="stack" style="--stack-gap: var(--space-2)">
-            <h2>Responsive a sí misma</h2>
-            <p>Arrastrá el borde de la ventana: la card decide su layout según su propio ancho.</p>
+            <label class="cluster"><input type="checkbox" checked> Acepto los términos</label>
+            <label class="cluster"><input type="radio" name="plan" checked> Plan gratis</label>
+            <label class="cluster"><input type="radio" name="plan"> Plan pro</label>
+            <label class="cluster"><input type="checkbox" role="switch" checked> Notificaciones</label>
+            <label class="cluster"><input type="checkbox" role="switch"> Modo experimental</label>
           </div>
-          <footer><button data-variant="primary">Acción</button></footer>
-        </article>
-        <article class="card" style="flex: 1 1 16rem">
-          <h2>Sin clases internas</h2>
-          <p>El h2 y el p se estilizan solos porque están dentro del @scope de la card.</p>
-          <footer><button>Ok</button></footer>
-        </article>
-      </div>
-    </section>
-
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Formulario</h2>
-      <form class="stack" style="--stack-gap: var(--space-4); max-inline-size: 24rem">
-        <p class="field">
-          <label for="name">Nombre</label>
-          <input id="name" type="text" placeholder="Tu nombre">
-        </p>
-        <p class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="tu@correo.com" required>
-          <small>Escribí algo inválido para ver el estado :invalid.</small>
-        </p>
-        <div class="cluster">
-          <button type="submit" data-variant="primary">Enviar</button>
-          <button type="reset" data-variant="ghost">Limpiar</button>
         </div>
-      </form>
-    </section>
-
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Badges y alerts</h2>
-      <div class="cluster">
-        <span class="badge">Nuevo</span>
-        <span class="badge" data-variant="accent">Beta</span>
-        <span class="badge" data-variant="success">Pago</span>
-        <span class="badge" data-variant="warning">Pendiente</span>
-        <span class="badge" data-variant="danger">Falló</span>
+        <pre class="demo-code"><code></code></pre>
       </div>
-      <div class="stack" style="--stack-gap: var(--space-2)">
-        <div class="alert" role="status"><strong>Info</strong><p>Variante por defecto (accent).</p></div>
-        <div class="alert" data-variant="success" role="status"><strong>Listo</strong><p>Se guardaron los cambios.</p></div>
-        <div class="alert" data-variant="warning" role="alert"><strong>Atención</strong><p>Tu prueba termina en 3 días.</p></div>
-        <div class="alert" data-variant="danger" role="alert"><strong>Error</strong><p>No se pudo conectar.</p></div>
-      </div>
-    </section>
+    </div>
+  </template>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Tabla</h2>
-      <table data-zebra>
-        <thead><tr><th>Cliente</th><th>Estado</th><th data-numeric>Monto</th></tr></thead>
-        <tbody>
-          <tr><td>Acme</td><td><span class="badge" data-variant="success">Pago</span></td><td data-numeric>1.200</td></tr>
-          <tr><td>Globex</td><td><span class="badge" data-variant="warning">Pendiente</span></td><td data-numeric>980</td></tr>
-          <tr><td>Initech</td><td><span class="badge" data-variant="danger">Falló</span></td><td data-numeric>2.450</td></tr>
-        </tbody>
-      </table>
-    </section>
+  <template id="sec-containers">
+    <div class="section">
+      <header class="section-head">
+        <h1>Contenedores y datos</h1>
+        <p>Estructuras que agrupan contenido. Donde no hay elemento semántico, una sola marca en la raíz.</p>
+      </header>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Dialog</h2>
-      <p style="color: var(--text-muted); margin: 0">
-        &lt;dialog&gt; nativo: showModal() + ::backdrop + @starting-style. Sin librería.
-      </p>
-      <div class="cluster">
-        <button data-variant="primary" id="open-dialog">Abrir dialog</button>
-      </div>
-      <dialog id="demo-dialog">
-        <header>¿Confirmás la acción?</header>
-        <p>Modal nativo con animación de entrada por @starting-style y backdrop con blur.</p>
-        <footer>
-          <form method="dialog"><button>Cancelar</button></form>
-          <button data-variant="primary" id="confirm-dialog">Confirmar</button>
-        </footer>
-      </dialog>
-    </section>
-
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Tabs</h2>
-      <div>
-        <div role="tablist" aria-label="Demo">
-          <button role="tab" id="t1" aria-controls="p1" aria-selected="true">Resumen</button>
-          <button role="tab" id="t2" aria-controls="p2" aria-selected="false">Detalles</button>
-          <button role="tab" id="t3" aria-controls="p3" aria-selected="false">Ajustes</button>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Card</h2>
+          <p>No existe un elemento "card", así que la marca es <code>.card</code>. Todo lo interno se estiliza por su elemento. Con imagen, pasa a 2 columnas según su <em>propio</em> ancho (container query), no el de la pantalla.</p>
         </div>
-        <div role="tabpanel" id="p1" aria-labelledby="t1"><p style="margin:0">Panel de resumen. El cambio de pestaña es comportamiento (JS), el estilo es por rol.</p></div>
-        <div role="tabpanel" id="p2" aria-labelledby="t2" hidden><p style="margin:0">Panel de detalles.</p></div>
-        <div role="tabpanel" id="p3" aria-labelledby="t3" hidden><p style="margin:0">Panel de ajustes.</p></div>
+        <div class="demo-preview">
+          <article class="card" style="max-inline-size: 26rem">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%233b6cf2'/%3E%3C/svg%3E" alt="">
+            <div class="stack" style="--stack-gap: var(--space-2)">
+              <h2>Responsive a sí misma</h2>
+              <p>Decide su layout por su ancho disponible.</p>
+            </div>
+            <footer><button data-variant="primary">Acción</button></footer>
+          </article>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Menu (dropdown) y tooltip</h2>
-      <div class="cluster">
-        <details class="menu">
-          <summary>Opciones</summary>
-          <div>
-            <a href="#">Editar</a>
-            <button type="button">Duplicar</button>
-            <button type="button">Eliminar</button>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Tabla</h2>
+          <p>El <code>&lt;table&gt;</code> es la marca. Comportamientos opt-in por intención: <code>data-zebra</code>, <code>data-sticky</code>, y <code>data-numeric</code> en celdas numéricas.</p>
+        </div>
+        <div class="demo-preview">
+          <table data-zebra>
+            <thead><tr><th>Cliente</th><th>Estado</th><th data-numeric>Monto</th></tr></thead>
+            <tbody>
+              <tr><td>Acme</td><td><span class="badge" data-variant="success">Pago</span></td><td data-numeric>1.200</td></tr>
+              <tr><td>Globex</td><td><span class="badge" data-variant="warning">Pendiente</span></td><td data-numeric>980</td></tr>
+              <tr><td>Initech</td><td><span class="badge" data-variant="danger">Falló</span></td><td data-numeric>2.450</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Accordion</h2>
+          <p>Construido sobre <code>&lt;details&gt;</code>. El atributo nativo <code>name</code> lo hace exclusivo (uno abierto a la vez) sin una línea de JS.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="stack" style="--stack-gap: var(--space-2)">
+            <details class="accordion" name="faq" open><summary>¿Necesita build?</summary><p>No. CSS plano servido tal cual.</p></details>
+            <details class="accordion" name="faq"><summary>¿Usa preprocesador?</summary><p>No. Custom properties + calc reemplazan a Sass.</p></details>
           </div>
-        </details>
-        <button data-tooltip="Copiado al portapapeles">Copiar</button>
-        <button data-variant="ghost" data-tooltip="Acción irreversible">Pasá el mouse</button>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Breadcrumb y pagination</h2>
-      <nav aria-label="Breadcrumb">
-        <ol class="breadcrumb">
-          <li><a href="#">Inicio</a></li>
-          <li><a href="#">Componentes</a></li>
-          <li><a aria-current="page">Tabs</a></li>
-        </ol>
-      </nav>
-      <nav aria-label="Pagination">
-        <ul class="pagination">
-          <li><a href="#" rel="prev" aria-label="Anterior">‹</a></li>
-          <li><a href="#">1</a></li>
-          <li><a aria-current="page">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#" rel="next" aria-label="Siguiente">›</a></li>
-        </ul>
-      </nav>
-    </section>
-
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Accordion</h2>
-      <p style="color: var(--text-muted); margin: 0">
-        &lt;details name="faq"&gt; → acordeón exclusivo (uno abierto a la vez), sin JS.
-      </p>
-      <div class="stack" style="--stack-gap: var(--space-2)">
-        <details class="accordion" name="faq" open>
-          <summary>¿Necesita build?</summary>
-          <p>No. Es CSS plano servido tal cual.</p>
-        </details>
-        <details class="accordion" name="faq">
-          <summary>¿Usa preprocesador?</summary>
-          <p>No. Custom properties + calc reemplazan a Sass.</p>
-        </details>
-        <details class="accordion" name="faq">
-          <summary>¿Qué navegadores?</summary>
-          <p>Modernos: @scope en Chrome 118+, Safari 17.4+, Firefox 128+.</p>
-        </details>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Dialog</h2>
+          <p>El <code>&lt;dialog&gt;</code> nativo: <code>showModal()</code> + <code>::backdrop</code> + animación de entrada con <code>@starting-style</code>. Sin librería de posicionamiento.</p>
+        </div>
+        <div class="demo-preview">
+          <button data-variant="primary" data-ref="openDialog">Abrir dialog</button>
+          <dialog data-ref="dialog">
+            <header>¿Confirmás la acción?</header>
+            <p>Modal nativo con backdrop con blur.</p>
+            <footer>
+              <form method="dialog"><button>Cancelar</button></form>
+              <button data-variant="primary" data-ref="confirmDialog">Confirmar</button>
+            </footer>
+          </dialog>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
+    </div>
+  </template>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Controles</h2>
-      <div class="stack" style="--stack-gap: var(--space-2)">
-        <label class="cluster"><input type="checkbox" checked> Acepto los términos</label>
-        <label class="cluster"><input type="radio" name="plan" checked> Plan gratis</label>
-        <label class="cluster"><input type="radio" name="plan"> Plan pro</label>
-        <label class="cluster"><input type="checkbox" role="switch" checked> Notificaciones</label>
-        <label class="cluster"><input type="checkbox" role="switch"> Modo experimental</label>
+  <template id="sec-nav">
+    <div class="section">
+      <header class="section-head">
+        <h1>Navegación</h1>
+        <p>Componentes para moverse. <code>&lt;nav&gt;</code> es ambiguo, así que cada uno lleva su marca propia.</p>
+      </header>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Tabs</h2>
+          <p>El estilo es 100% por rol ARIA (<code>[role="tab"]</code>); alternar <code>aria-selected</code> y <code>[hidden]</code> es comportamiento — acá lo maneja una View de Lumen.</p>
+        </div>
+        <div class="demo-preview">
+          <div data-ref="tabs">
+            <div role="tablist" aria-label="Demo">
+              <button role="tab" id="t1" aria-controls="p1" aria-selected="true">Resumen</button>
+              <button role="tab" id="t2" aria-controls="p2" aria-selected="false">Detalles</button>
+              <button role="tab" id="t3" aria-controls="p3" aria-selected="false">Ajustes</button>
+            </div>
+            <div role="tabpanel" id="p1" aria-labelledby="t1"><p style="margin:0">Panel de resumen.</p></div>
+            <div role="tabpanel" id="p2" aria-labelledby="t2" hidden><p style="margin:0">Panel de detalles.</p></div>
+            <div role="tabpanel" id="p3" aria-labelledby="t3" hidden><p style="margin:0">Panel de ajustes.</p></div>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Progress y meter</h2>
-      <div class="stack" style="--stack-gap: var(--space-2); max-inline-size: 24rem">
-        <progress value="0.6"></progress>
-        <progress></progress>
-        <meter value="0.3"></meter>
-        <meter value="85" min="0" max="100" low="50" high="80" optimum="30"></meter>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Menu (dropdown)</h2>
+          <p>Disclosure sobre <code>&lt;details&gt;</code>, marca <code>details.menu</code>. Abre/cierra sin JS (no tiene light-dismiss; para eso, Popover API).</p>
+        </div>
+        <div class="demo-preview">
+          <details class="menu">
+            <summary>Opciones</summary>
+            <div>
+              <a href="#/nav">Editar</a>
+              <button type="button">Duplicar</button>
+              <button type="button">Eliminar</button>
+            </div>
+          </details>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Avatar</h2>
-      <div class="cluster">
-        <span class="avatar">HS</span>
-        <span class="avatar" style="--avatar-size: 3.5rem">AB</span>
-        <span class="avatar" style="--avatar-size: 2rem; --accent: #16a34a">JD</span>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Breadcrumb y pagination</h2>
+          <p>Marca en la lista (<code>.breadcrumb</code> / <code>.pagination</code>), envueltas en <code>&lt;nav aria-label&gt;</code>. La página actual usa <code>aria-current</code>.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="stack" style="--stack-gap: var(--space-3)">
+            <nav aria-label="Breadcrumb">
+              <ol class="breadcrumb">
+                <li><a href="#/">Inicio</a></li>
+                <li><a href="#/nav">Navegación</a></li>
+                <li><a aria-current="page">Tabs</a></li>
+              </ol>
+            </nav>
+            <nav aria-label="Pagination">
+              <ul class="pagination">
+                <li><a href="#/nav" rel="prev" aria-label="Anterior">‹</a></li>
+                <li><a href="#/nav">1</a></li>
+                <li><a aria-current="page">2</a></li>
+                <li><a href="#/nav">3</a></li>
+                <li><a href="#/nav" rel="next" aria-label="Siguiente">›</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
+    </div>
+  </template>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Toast</h2>
-      <div class="cluster">
-        <button data-variant="primary" id="toast-btn">Mostrar toast</button>
+  <template id="sec-feedback">
+    <div class="section">
+      <header class="section-head">
+        <h1>Feedback y estado</h1>
+        <p>Comunicar estado al usuario. El tono se elige por intención (<code>data-variant</code>), derivado de los tokens de estado.</p>
+      </header>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Alerts</h2>
+          <p>Callout en bloque. Cada variante intercambia solo una variable local <code>--tone</code>; el resto de la regla la lee.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="stack" style="--stack-gap: var(--space-2)">
+            <div class="alert" role="status"><strong>Info</strong><p>Variante por defecto (accent).</p></div>
+            <div class="alert" data-variant="success" role="status"><strong>Listo</strong><p>Se guardaron los cambios.</p></div>
+            <div class="alert" data-variant="warning" role="alert"><strong>Atención</strong><p>Tu prueba termina en 3 días.</p></div>
+            <div class="alert" data-variant="danger" role="alert"><strong>Error</strong><p>No se pudo conectar.</p></div>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Chips</h2>
-      <div class="cluster">
-        <span class="chip">Diseño</span>
-        <span class="chip">CSS <button type="button" aria-label="Quitar">×</button></span>
-        <span class="chip">Nativo <button type="button" aria-label="Quitar">×</button></span>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Badges y chips</h2>
+          <p>Pill inline (<code>.badge</code>) y tag descartable (<code>.chip</code>). El tono del badge sale de un solo token con <code>color-mix()</code>.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="cluster">
+            <span class="badge">Nuevo</span>
+            <span class="badge" data-variant="accent">Beta</span>
+            <span class="badge" data-variant="success">Pago</span>
+            <span class="chip">Diseño</span>
+            <span class="chip">CSS <button type="button" aria-label="Quitar">×</button></span>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Skeleton</h2>
-      <div class="card" style="max-inline-size: 22rem; box-shadow: none">
-        <div class="skeleton" style="block-size: 8rem"></div>
-        <div class="skeleton" style="block-size: 1.25rem; max-inline-size: 60%"></div>
-        <div class="skeleton" style="block-size: 1rem"></div>
-        <div class="skeleton" style="block-size: 1rem; max-inline-size: 80%"></div>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Tooltip y toast</h2>
+          <p>Tooltip por <code>[data-tooltip]</code> (hint con <code>::after</code> + <code>attr()</code>). El toast se anima al insertarse con <code>@starting-style</code>; aparecerlo es comportamiento (Lumen).</p>
+        </div>
+        <div class="demo-preview">
+          <div class="cluster">
+            <button data-tooltip="Copiado al portapapeles">Copiar</button>
+            <button data-variant="primary" data-ref="toastBtn">Mostrar toast</button>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>Spinner</h2>
-      <div class="cluster" style="--cluster-gap: var(--space-4)">
-        <span class="spinner" role="status" aria-label="Cargando"></span>
-        <span class="spinner" style="--spinner-size: 2rem; color: var(--accent)" role="status" aria-label="Cargando"></span>
-        <button data-variant="primary"><span class="spinner" aria-hidden="true" style="--spinner-size: 1em; color: currentColor"></span> Guardando…</button>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Progress, meter y spinner</h2>
+          <p>Elementos nativos <code>&lt;progress&gt;</code> y <code>&lt;meter&gt;</code> (bandas coloreadas con tokens de estado). El spinner sigue <code>currentColor</code>.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="stack" style="--stack-gap: var(--space-3); max-inline-size: 28rem">
+            <progress value="0.6"></progress>
+            <meter value="85" min="0" max="100" low="50" high="80" optimum="30"></meter>
+            <div class="cluster" style="--cluster-gap: var(--space-4)">
+              <span class="spinner" role="status" aria-label="Cargando"></span>
+              <span class="spinner" style="--spinner-size: 2rem; color: var(--accent)" role="status" aria-label="Cargando"></span>
+            </div>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
       </div>
-    </section>
 
-    <section class="stack" style="--stack-gap: var(--space-3)">
-      <h2>kbd y divider</h2>
-      <p style="margin: 0">Guardá con <kbd>Ctrl</kbd> + <kbd>S</kbd> o <kbd><kbd>Cmd</kbd>+<kbd>K</kbd></kbd>.</p>
-      <div class="divider">o</div>
-      <div class="divider"></div>
-    </section>
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Skeleton</h2>
+          <p>Placeholder de carga (<code>.skeleton</code>). El shimmer se pausa solo bajo <code>prefers-reduced-motion</code>.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="card" style="max-inline-size: 22rem; box-shadow: none">
+            <div class="skeleton" style="block-size: 8rem"></div>
+            <div class="skeleton" style="block-size: 1.25rem; max-inline-size: 60%"></div>
+            <div class="skeleton" style="block-size: 1rem"></div>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
 
-  </main>
+      <div class="toasts" data-ref="toasts"></div>
+    </div>
+  </template>
 
-  <div class="toasts" id="toasts"></div>
+  <template id="sec-primitives">
+    <div class="section">
+      <header class="section-head">
+        <h1>Primitivas</h1>
+        <p>Piezas chicas y reutilizables.</p>
+      </header>
 
-  <script>
-    const root = document.documentElement;
+      <div class="demo">
+        <div class="demo-head">
+          <h2>Avatar</h2>
+          <p>Imagen o iniciales (<code>.avatar</code>). Tamaño por la perilla <code>--avatar-size</code>; la fuente escala con <code>calc()</code>.</p>
+        </div>
+        <div class="demo-preview">
+          <div class="cluster">
+            <span class="avatar">HS</span>
+            <span class="avatar" style="--avatar-size: 3.5rem">AB</span>
+            <span class="avatar" style="--avatar-size: 2rem; --accent: #16a34a">JD</span>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
 
-    // EJE 1 · MODO: auto (SO) → claro → oscuro → auto…  Solo toca data-mode.
-    const modes = ["", "light", "dark"]; // "" = sigue al sistema operativo
-    const labels = { "": "auto", light: "claro", dark: "oscuro" };
-    document.getElementById("mode-toggle").addEventListener("click", (e) => {
-      const next = modes[(modes.indexOf(root.dataset.mode || "") + 1) % modes.length];
-      if (next) root.dataset.mode = next; else root.removeAttribute("data-mode");
-      e.currentTarget.textContent = "🌗 Modo: " + labels[next];
-    });
+      <div class="demo">
+        <div class="demo-head">
+          <h2>kbd y divider</h2>
+          <p>Tecla (<code>&lt;kbd&gt;</code>, anidable para combos) y regla con label centrado opcional (<code>.divider</code>).</p>
+        </div>
+        <div class="demo-preview">
+          <div class="stack" style="--stack-gap: var(--space-3)">
+            <p style="margin: 0">Guardá con <kbd>Ctrl</kbd> + <kbd>S</kbd> o <kbd><kbd>Cmd</kbd>+<kbd>K</kbd></kbd>.</p>
+            <div class="divider">o</div>
+            <div class="divider"></div>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+    </div>
+  </template>
 
-    // EJE 2 · TEMA: identidad. Independiente del modo → componen.
-    document.getElementById("theme-select").addEventListener("change", (e) => {
-      if (e.target.value) root.dataset.theme = e.target.value;
-      else root.removeAttribute("data-theme");
-    });
+  <template id="sec-404">
+    <div class="section">
+      <header class="section-head">
+        <h1>404</h1>
+        <p>Esa sección no existe. <a href="#/">Volver al inicio</a>.</p>
+      </header>
+    </div>
+  </template>
 
-    // Dialog nativo: showModal() abre; method="dialog" o close() cierran.
-    const dlg = document.getElementById("demo-dialog");
-    document.getElementById("open-dialog").addEventListener("click", () => dlg.showModal());
-    document.getElementById("confirm-dialog").addEventListener("click", () => dlg.close());
+  <template id="customizer">
+    <div class="drawer">
+      <div class="drawer-scrim" data-ref="scrim"></div>
+      <aside class="drawer-panel" role="dialog" aria-label="Customizar tokens">
+        <header class="drawer-head">
+          <strong>Tokens</strong>
+          <span class="cluster">
+            <button data-variant="ghost" data-ref="reset">Reset</button>
+            <button data-variant="ghost" data-ref="close" aria-label="Cerrar">×</button>
+          </span>
+        </header>
+        <p class="drawer-note">Mové una perilla y se reconfigura <em>todo</em> el sitio — esa es la tesis de scc. Se aplica en <code>:root</code> con <code>setProperty</code>.</p>
 
-    // Tabs: el estilo es 100% CSS por rol; alternar aria-selected + [hidden] es comportamiento.
-    document.querySelectorAll('[role="tablist"]').forEach((list) => {
-      list.addEventListener("click", (e) => {
-        const tab = e.target.closest('[role="tab"]');
-        if (!tab) return;
-        list.querySelectorAll('[role="tab"]').forEach((t) => {
-          const selected = t === tab;
-          t.setAttribute("aria-selected", selected);
-          document.getElementById(t.getAttribute("aria-controls")).hidden = !selected;
-        });
-      });
-    });
+        <div class="drawer-controls" data-ref="controls">
+          <label class="ctl">
+            <span class="ctl-label">Acento <output data-out="--accent"></output></span>
+            <input type="color" data-token="--accent" value="#3b6cf2">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Tono de grises <output data-out="--neutral-hue"></output></span>
+            <input type="range" data-token="--neutral-hue" min="0" max="360" step="1" value="264">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Croma de grises <output data-out="--neutral-chroma"></output></span>
+            <input type="range" data-token="--neutral-chroma" data-unit="%" min="0" max="12" step="1" value="5">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Radio <output data-out="--radius"></output></span>
+            <input type="range" data-token="--radius" data-unit="px" min="0" max="24" step="1" value="8">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Razón tipográfica <output data-out="--ratio"></output></span>
+            <input type="range" data-token="--ratio" min="1.1" max="1.4" step="0.01" value="1.25">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Unidad de espacio <output data-out="--space-base"></output></span>
+            <input type="range" data-token="--space-base" data-unit="rem" min="0.2" max="0.4" step="0.01" value="0.25">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Grosor de borde <output data-out="--border-width"></output></span>
+            <input type="range" data-token="--border-width" data-unit="px" min="1" max="4" step="1" value="1">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Duración <output data-out="--dur"></output></span>
+            <input type="range" data-token="--dur" data-unit="ms" min="0" max="400" step="25" value="150">
+          </label>
+          <label class="ctl">
+            <span class="ctl-label">Tipografía</span>
+            <select data-token="--font-sans">
+              <option value="system-ui, sans-serif">Sans (sistema)</option>
+              <option value="Georgia, 'Times New Roman', serif">Serif</option>
+              <option value="ui-monospace, monospace">Mono</option>
+            </select>
+          </label>
+        </div>
+      </aside>
+    </div>
+  </template>
 
-    // Toast: agregar un .toast a la región. @starting-style lo anima al insertarse.
-    const toasts = document.getElementById("toasts");
-    document.getElementById("toast-btn").addEventListener("click", () => {
-      const t = document.createElement("div");
-      t.className = "toast";
-      t.dataset.variant = "success";
-      t.setAttribute("role", "status");
-      t.innerHTML = "<strong>Guardado</strong><p>Tus cambios se guardaron.</p>";
-      toasts.append(t);
-      setTimeout(() => {
-        t.style.opacity = "0";
-        t.addEventListener("transitionend", () => t.remove(), { once: true });
-      }, 3000);
-    });
-  </script>
+  <script type="module" src="app/main.js"></script>
 </body>
 </html>
