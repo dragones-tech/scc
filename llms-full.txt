@@ -160,7 +160,7 @@ copy: components/_template.css. The conventions in brief:
 --------------------------------------------------------------------------------
 ## Component catalog
 
-29 components. Marker = the selector that identifies the component. "Behavior"
+30 components. Marker = the selector that identifies the component. "Behavior"
 means a small amount of JS (or your view layer) is needed; everything else is
 pure CSS. Variants are [data-variant] unless noted; states are native pseudo-classes.
 
@@ -188,6 +188,8 @@ NAVIGATION
                                                         [data-nav-end].
   tabs         [role="tablist"] / [role="tabpanel"]    Behavior: toggle aria-selected/[hidden].
   menu         details.menu                            Dropdown via <details>. No light-dismiss.
+  popover      [popover]                                Native light-dismiss panel; opened by
+                                                        popovertarget. [data-side] anchors (PE).
   breadcrumb   .breadcrumb (on the list)               Wrap in <nav aria-label>. CSS separators.
   pagination   .pagination (on the list)               Wrap in <nav aria-label>. aria-current.
 

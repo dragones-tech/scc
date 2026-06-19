@@ -102,7 +102,7 @@
 
       <!-- STATS band -->
       <section class="stats reveal">
-        <div class="metric" style="--tone: var(--accent)"><strong>29</strong><span data-i18n="home.statComponents"></span></div>
+        <div class="metric" style="--tone: var(--accent)"><strong>30</strong><span data-i18n="home.statComponents"></span></div>
         <div class="metric" style="--tone: var(--success)"><strong>6</strong><span data-i18n="home.statLayers"></span></div>
         <div class="metric" style="--tone: var(--warning)"><strong>0</strong><span data-i18n="home.statBuild"></span></div>
         <div class="metric" style="--tone: var(--danger)"><strong>0</strong><span data-i18n="home.statDeps"></span></div>
@@ -543,6 +543,25 @@
               <button type="button">Eliminar</button>
             </div>
           </details>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2 data-i18n="navsec.popoverTitle"></h2>
+          <p data-i18n="navsec.popoverDesc"></p>
+        </div>
+        <div class="demo-preview">
+          <button popovertarget="pop-acct" data-variant="primary">Cuenta ▾</button>
+          <div popover id="pop-acct" data-side="bottom">
+            <menu>
+              <li><a href="#/nav">Perfil</a></li>
+              <li><a href="#/nav">Ajustes</a></li>
+              <li><hr></li>
+              <li><button type="button">Cerrar sesión</button></li>
+            </menu>
+          </div>
         </div>
         <pre class="demo-code"><code></code></pre>
       </div>

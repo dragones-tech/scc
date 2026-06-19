@@ -1,0 +1,104 @@
+/* popover — a floating panel with native light-dismiss (outside click + Esc) and
+   top-layer stacking, ZERO JS. This is the menu's light-dismiss sibling: where
+   details.menu can only close by toggling its summary, [popover] closes itself.
+
+   Marker: the native [popover] attribute — it means exactly "this is a popover",
+   the most semantic marker there is. Open it with a button's popovertarget, no script:
+
+   <button popovertarget="acct">Account ▾</button>
+   <div popover id="acct" data-side="bottom">
+     <menu>                          <!-- semantic <menu> = a list of actions -->
+       <li><a href="/profile">Profile</a></li>
+       <li><hr></li>
+       <li><button type="button">Sign out</button></li>
+     </menu>
+   </div>
+
+   Placement: the browser centers it by default (works everywhere). With [data-side]
+   it pins to the trigger via native CSS anchor positioning WHERE SUPPORTED (@supports),
+   and stays centered elsewhere — progressive enhancement, never a broken state.
+   prefers-reduced-motion neutralizes the animation via the reset. */
+
+@layer components {
+  @scope ([popover]) {
+    :scope {
+      inline-size: max-content;
+      min-inline-size: 12rem;
+      max-inline-size: min(90vw, 22rem);
+      padding: var(--space-1);
+      background: var(--surface);
+      color: var(--text);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+
+      /* open/close animation — display & overlay need allow-discrete to animate */
+      opacity: 0;
+      translate: 0 calc(var(--space-1) * -1);
+      transition: opacity var(--dur) var(--ease),
+                  translate var(--dur) var(--ease),
+                  overlay var(--dur) var(--ease) allow-discrete,
+                  display var(--dur) var(--ease) allow-discrete;
+    }
+    :scope:popover-open { opacity: 1; translate: 0 0; }
+
+    /* the state to animate FROM when it first renders open */
+    @starting-style {
+      :scope:popover-open { opacity: 0; translate: 0 calc(var(--space-1) * -1); }
+    }
+
+    /* popover="auto" gets a backdrop; keep it present (for dismiss) but invisible */
+    :scope::backdrop { background: transparent; }
+
+    /* A <menu> inside turns the panel into a command list */
+    menu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* items — :scope-prefixed to override the global <button>/<a> base in-layer */
+    :scope menu :is(a, button) {
+      appearance: none;
+      border: 0;
+      background: none;
+      cursor: pointer;
+      font: inherit;
+      display: block;
+      inline-size: 100%;
+      text-align: start;
+      text-decoration: none;
+      color: var(--text);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+    }
+    :scope menu :is(a, button):hover,
+    :scope menu :is(a, button):focus-visible {
+      background: color-mix(in oklab, transparent, var(--text) 8%);
+    }
+
+    hr {
+      border: 0;
+      border-block-start: var(--border-width) solid var(--border);
+      margin: var(--space-1) 0;
+    }
+
+    /* Anchored placement (PROGRESSIVE ENHANCEMENT). Where CSS anchor positioning is
+       supported, [data-side] pins the panel to its trigger (the popover's implicit
+       anchor); elsewhere this whole block is inert and the browser keeps it centered. */
+    @supports (position-area: block-end) {
+      :scope[data-side] {
+        margin: var(--space-1);
+        inset: auto;
+        position-area: var(--pop-area, block-end span-inline-end);
+        position-try-fallbacks: flip-block, flip-inline;
+      }
+      :scope[data-side="bottom"] { --pop-area: block-end span-inline-end; }
+      :scope[data-side="top"]    { --pop-area: block-start span-inline-end; }
+      :scope[data-side="right"]  { --pop-area: inline-end span-block-end; }
+      :scope[data-side="left"]   { --pop-area: inline-start span-block-end; }
+    }
+  }
+}
