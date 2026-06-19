@@ -50,6 +50,7 @@
           <a href="#/" data-i18n="nav.home">Home</a>
           <a href="#/forms" data-i18n="nav.forms">Forms</a>
           <a href="#/containers" data-i18n="nav.containers">Containers</a>
+          <a href="#/layout" data-i18n="nav.layout">Layout</a>
           <a href="#/nav" data-i18n="nav.nav">Navigation</a>
           <a href="#/feedback" data-i18n="nav.feedback">Feedback</a>
           <a href="#/primitives" data-i18n="nav.primitives">Primitives</a>
@@ -386,6 +387,75 @@
               <button data-variant="primary" data-ref="confirmDialog">Confirmar</button>
             </footer>
           </dialog>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="sec-layout">
+    <div class="section">
+      <section class="hero hero-section" data-size="compact">
+        <div class="hero-copy">
+          <h1 data-i18n="layout.heroTitle"></h1>
+          <p data-i18n="layout.heroLead"></p>
+        </div>
+        <div class="hero-demo" inert>
+          <div class="grid" style="--grid-min: 7rem">
+            <article class="card"><h3>Uno</h3></article>
+            <article class="card"><h3>Dos</h3></article>
+            <article class="card"><h3>Tres</h3></article>
+          </div>
+        </div>
+      </section>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2 data-i18n="layout.gridTitle"></h2>
+          <p data-i18n="layout.gridDesc"></p>
+        </div>
+        <div class="demo-preview">
+          <div class="grid" style="--grid-min: 12rem">
+            <article class="card"><h3>Producto</h3><p>Cada columna mide al menos 12rem.</p></article>
+            <article class="card"><h3>Producto</h3><p>Entran cuantas quepan; el resto baja.</p></article>
+            <article class="card"><h3>Producto</h3><p>Sin una sola media query.</p></article>
+            <article class="card"><h3>Producto</h3><p>Achicá la ventana para verlo.</p></article>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2 data-i18n="layout.switcherTitle"></h2>
+          <p data-i18n="layout.switcherDesc"></p>
+        </div>
+        <div class="demo-preview">
+          <div class="switcher" style="--switcher-threshold: 28rem">
+            <article class="card"><h3>Contenido</h3><p>Sobre el umbral compartimos la fila.</p></article>
+            <article class="card"><h3>Aside</h3><p>Bajo el umbral, cada uno toma una fila entera.</p></article>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2 data-i18n="layout.primitivesTitle"></h2>
+          <p data-i18n="layout.primitivesDesc"></p>
+        </div>
+        <div class="demo-preview">
+          <div class="stack" style="--stack-gap: var(--space-3)">
+            <div class="stack" style="--stack-gap: var(--space-2)">
+              <span class="badge" data-variant="accent">.stack</span>
+              <span class="badge" data-variant="accent">.stack</span>
+            </div>
+            <div class="cluster">
+              <span class="chip">.cluster</span>
+              <span class="chip">.cluster</span>
+              <span class="chip">.cluster</span>
+            </div>
+          </div>
         </div>
         <pre class="demo-code"><code></code></pre>
       </div>

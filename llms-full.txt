@@ -117,7 +117,7 @@ not a specificity war. Used in tabs.css, menu.css and chip.css.
     sunset.css         Example of forking the contract (same markup, different look)
   components/          one file per component — see the Component catalog below
     _template.css      copy this to author a new component (not imported)
-  utilities.css        @layer utilities  (.stack .cluster .center .visually-hidden)
+  utilities.css        @layer utilities  (.stack .cluster .center .grid .switcher .visually-hidden)
   demo/index.html      No-build demonstration.
 
 --------------------------------------------------------------------------------
@@ -257,6 +257,14 @@ without a single @media:
   - Intrinsic layout: flex-wrap, grid repeat(auto-fit, minmax()), min/max/clamp.
     The demo reflows on its own via .cluster (flex-wrap), zero media queries.
   - Fluid typography/space with clamp() (e.g. --text-base as a clamp()).
+
+These are packaged as structure-only utilities (the one place a class may describe
+arrangement, never appearance), each reacting to ITS OWN width, no @media:
+  .stack     vertical rhythm                              knob --stack-gap
+  .cluster   inline group with wrap                       knob --cluster-gap
+  .center    cap the reading width                        knob --measure
+  .grid      responsive columns, auto-fit + minmax        knobs --grid-min --grid-gap
+  .switcher  row that flips to a column under a threshold  knobs --switcher-threshold --switcher-gap
 
 @media is left only for PAGE layout (a sidebar that collapses, etc.).
 

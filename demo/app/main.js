@@ -2,7 +2,7 @@
 import { Router } from 'lumenjs';
 import { Layout } from './layout.js';
 import { Customizer } from './customizer.js';
-import { Home, Forms, Containers, Nav, Feedback, Primitives, Guide, NotFound } from './sections.js';
+import { Home, Forms, Containers, Layouts, Nav, Feedback, Primitives, Guide, NotFound } from './sections.js';
 
 // The token customizer drawer (mounted to <body>; toggled from the navbar).
 const customizer = new Customizer();
@@ -19,6 +19,7 @@ new Router()
   .add('/',           () => outlet.show(new Home()))
   .add('/forms',      () => outlet.show(new Forms()))
   .add('/containers', () => outlet.show(new Containers()))
+  .add('/layout',     () => outlet.show(new Layouts()))
   .add('/nav',        () => outlet.show(new Nav()))
   .add('/feedback',   () => outlet.show(new Feedback()))
   .add('/primitives', () => outlet.show(new Primitives()))

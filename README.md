@@ -118,6 +118,25 @@ component adapts to *its* width — see `components/card.css`), `flex-wrap`,
 breakpoints can't be custom properties, so they're a documented convention, not
 tokens.
 
+## Layout utilities
+
+The `utilities` layer carries the only classes allowed to describe *structure*
+(never appearance). They're the flex/grid primitives every page is built from, and
+each reflows on **its own** width — no breakpoints:
+
+| Utility | Does | Knob |
+|---|---|---|
+| `.stack` | space children vertically | `--stack-gap` |
+| `.cluster` | group inline, wrap | `--cluster-gap` |
+| `.center` | cap the reading width | `--measure` |
+| `.grid` | responsive columns (`auto-fit` + `minmax`) | `--grid-min`, `--grid-gap` |
+| `.switcher` | row that flips to a column under a threshold | `--switcher-threshold`, `--switcher-gap` |
+
+```html
+<!-- as many columns as fit, each ≥ --grid-min; the rest wrap. No @media. -->
+<div class="grid" style="--grid-min: 14rem">…</div>
+```
+
 ## Requirements
 
 Modern browsers: `@scope` in Chrome 118+, Safari 17.4+, Firefox 128+

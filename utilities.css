@@ -27,6 +27,29 @@
     padding-inline: var(--space-4);
   }
 
+  /* Responsive columns, NO @media: every column is at least --grid-min wide; as
+     many as fit per row, the rest wrap. The grid decides, not a breakpoint.
+     min(--grid-min, 100%) keeps it from overflowing a narrow container. */
+  .grid {
+    display: grid;
+    gap: var(--grid-gap, var(--space-4));
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 16rem), 100%), 1fr));
+  }
+
+  /* Row that flips to a column below a width threshold — again no @media. Above
+     --switcher-threshold the children share the row; below it they each take a
+     full row (stack). The Every-Layout flex-basis trick: the negative basis
+     clamps to 0 when there's room, balloons past 100% when there isn't. */
+  .switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--switcher-gap, var(--space-4));
+  }
+  .switcher > * {
+    flex-grow: 1;
+    flex-basis: calc((var(--switcher-threshold, 30rem) - 100%) * 999);
+  }
+
   /* Available to screen readers, hidden visually */
   .visually-hidden:not(:focus):not(:focus-within) {
     position: absolute;

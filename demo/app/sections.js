@@ -106,6 +106,8 @@ export class Containers extends Section {
   }
 }
 
+export class Layouts extends Section { static template = '#sec-layout'; }
+
 export class Nav extends Section {
   static template = '#sec-nav';
   enhance() {

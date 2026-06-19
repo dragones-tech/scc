@@ -13,7 +13,7 @@ export const i18n = new I18n({
   fallback: 'en',
   messages: {
     en: {
-      nav: { home: 'Home', forms: 'Forms', containers: 'Containers', nav: 'Navigation', feedback: 'Feedback', primitives: 'Primitives', guide: 'Guide' },
+      nav: { home: 'Home', forms: 'Forms', containers: 'Containers', layout: 'Layout', nav: 'Navigation', feedback: 'Feedback', primitives: 'Primitives', guide: 'Guide' },
       home: {
         heroTitle: 'CSS with no build,<br>no magic.',
         heroLead: "Style <strong>semantic</strong> HTML with the platform's native primitives — <code>@layer</code>, <code>@scope</code>, custom properties, <code>color-mix()</code>, <code>light-dark()</code>. No Sass, no PostCSS, no Tailwind, no BEM.",
@@ -60,6 +60,16 @@ export const i18n = new I18n({
         accordionDesc: 'Built on <code>&lt;details&gt;</code>. The native <code>name</code> attribute makes it exclusive (one open at a time) without a line of JS.',
         dialogTitle: 'Dialog',
         dialogDesc: 'The native <code>&lt;dialog&gt;</code>: <code>showModal()</code> + <code>::backdrop</code> + an entrance animation with <code>@starting-style</code>. No positioning library.',
+      },
+      layout: {
+        heroTitle: 'Layout',
+        heroLead: 'Structure-only utilities — the one place a class may describe arrangement, never appearance. They respond to <em>their own</em> width, with zero media queries.',
+        gridTitle: 'Grid',
+        gridDesc: 'Responsive columns with <code>.grid</code>: each column is at least <code>--grid-min</code> wide (default <code>16rem</code>); as many fit per row, the rest wrap. It is <code>repeat(auto-fit, minmax())</code> wrapped as one decision — the grid reflows itself, no breakpoint.',
+        switcherTitle: 'Switcher',
+        switcherDesc: 'A row that flips to a column below <code>--switcher-threshold</code> (default <code>30rem</code>). The Every-Layout flex-basis trick: above the threshold the children share the row; below it each takes a full row. Reacts to the container, not the screen.',
+        primitivesTitle: 'Stack, cluster & center',
+        primitivesDesc: '<code>.stack</code> spaces children vertically (<code>--stack-gap</code>); <code>.cluster</code> groups them inline and wraps (<code>--cluster-gap</code>); <code>.center</code> caps the reading width at <code>--measure</code>. The flex/grid primitives every page is built from.',
       },
       navsec: {
         heroTitle: 'Navigation',
@@ -193,6 +203,16 @@ export const i18n = new I18n({
         accordionDesc: 'Construido sobre <code>&lt;details&gt;</code>. El atributo nativo <code>name</code> lo hace exclusivo (uno abierto a la vez) sin una línea de JS.',
         dialogTitle: 'Dialog',
         dialogDesc: 'El <code>&lt;dialog&gt;</code> nativo: <code>showModal()</code> + <code>::backdrop</code> + animación de entrada con <code>@starting-style</code>. Sin librería de posicionamiento.',
+      },
+      layout: {
+        heroTitle: 'Layout',
+        heroLead: 'Utilidades de solo estructura — el único lugar donde una clase puede describir disposición, nunca apariencia. Responden a <em>su propio</em> ancho, con cero media queries.',
+        gridTitle: 'Grid',
+        gridDesc: 'Columnas responsivas con <code>.grid</code>: cada columna mide al menos <code>--grid-min</code> (default <code>16rem</code>); entran cuantas quepan por fila, el resto baja. Es <code>repeat(auto-fit, minmax())</code> envuelto en una sola decisión — la grilla se reacomoda sola, sin breakpoint.',
+        switcherTitle: 'Switcher',
+        switcherDesc: 'Una fila que pasa a columna por debajo de <code>--switcher-threshold</code> (default <code>30rem</code>). El truco de flex-basis de Every Layout: sobre el umbral los hijos comparten la fila; bajo él cada uno toma una fila entera. Reacciona al contenedor, no a la pantalla.',
+        primitivesTitle: 'Stack, cluster y center',
+        primitivesDesc: '<code>.stack</code> espacia los hijos en vertical (<code>--stack-gap</code>); <code>.cluster</code> los agrupa en línea con wrap (<code>--cluster-gap</code>); <code>.center</code> limita el ancho de lectura a <code>--measure</code>. Las primitivas de flex/grid con las que se arma cada página.',
       },
       navsec: {
         heroTitle: 'Navegación',
