@@ -50,6 +50,31 @@
     flex-basis: calc((var(--switcher-threshold, 30rem) - 100%) * 999);
   }
 
+  /* Two children — a fixed-ish side rail and a fluid content area — that wrap to a
+     stack when there's no room, NO @media. The rail keeps --sidebar-width; the
+     content grows hard and triggers the wrap once it can't keep --sidebar-content-min
+     beside it. Rail sits at the start; [data-side="end"] moves it to the end.
+     Logical properties → correct in RTL, no left/right hard-coded. */
+  .sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sidebar-gap, var(--space-4));
+  }
+  .sidebar > * { flex-grow: 1; flex-basis: var(--sidebar-width, 18rem); }
+  /* the CONTENT child (opposite the rail): grow aggressively, set the wrap point */
+  .sidebar > :last-child,
+  .sidebar[data-side="end"] > :first-child {
+    flex-grow: 999;
+    flex-basis: 0;
+    min-inline-size: var(--sidebar-content-min, 60%);
+  }
+  /* rail at the end → the last child is the rail again, not the content */
+  .sidebar[data-side="end"] > :last-child {
+    flex-grow: 1;
+    flex-basis: var(--sidebar-width, 18rem);
+    min-inline-size: 0;
+  }
+
   /* Available to screen readers, hidden visually */
   .visually-hidden:not(:focus):not(:focus-within) {
     position: absolute;

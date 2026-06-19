@@ -37,11 +37,11 @@
   grid-template-columns: 13rem 1fr;
 }
 
-/* Sidebar nav — fixed in place: it stays put below the navbar while content scrolls.
-   NOTE: named .sidebar (not .menu) on purpose — .menu is scc's dropdown component
-   (details.menu), and this file's rules are unlayered, so a shared name would leak
-   the sticky/overflow styles onto the dropdown. */
-.sidebar {
+/* App nav rail — fixed in place: it stays put below the navbar while content scrolls.
+   NOTE: named .app-nav (not .sidebar or .menu) on purpose — .sidebar is scc's layout
+   utility and .menu its dropdown component, and this file's rules are unlayered, so a
+   shared name would leak these chrome styles onto them. */
+.app-nav {
   position: sticky;
   inset-block-start: var(--nav-h);
   align-self: start;
@@ -53,14 +53,14 @@
   padding: var(--space-4);
   border-inline-end: var(--border-width) solid var(--border);
 }
-.sidebar a {
+.app-nav a {
   color: var(--text-muted);
   text-decoration: none;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
 }
-.sidebar a:hover { color: var(--text); background: color-mix(in oklab, transparent, var(--text) 8%); }
-.sidebar a[aria-current] {
+.app-nav a:hover { color: var(--text); background: color-mix(in oklab, transparent, var(--text) 8%); }
+.app-nav a[aria-current] {
   color: var(--accent);
   font-weight: 600;
   background: color-mix(in oklab, var(--accent), transparent 88%);
@@ -474,7 +474,7 @@
 }
 @media (max-width: 44rem) {
   .shell-body { grid-template-columns: 1fr; }
-  .sidebar {
+  .app-nav {
     flex-direction: row;
     max-block-size: none;        /* horizontal bar: no vertical cap */
     overflow-y: visible;

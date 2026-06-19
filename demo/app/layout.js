@@ -3,8 +3,8 @@ import { View } from 'lumenjs';
 import { i18n, applyI18n } from './i18n.js';
 
 /**
- * The app shell: a persistent navbar (with the two theming controls) and a sidebar
- * menu, plus a `main` region the Router swaps section views into.
+ * The app shell: a persistent navbar (with the two theming controls) and a nav rail
+ * (.app-nav), plus a `main` region the Router swaps section views into.
  *
  * Two orthogonal theming axes, wired here:
  *   data-mode  on <html>  → light / dark / auto (color-scheme)
@@ -44,7 +44,7 @@ export class Layout extends View {
       this.syncLang();
     }, { signal: this.signal });
 
-    // Fill the sidebar links (and any chrome [data-i18n]) for the current locale.
+    // Fill the nav-rail links (and any chrome [data-i18n]) for the current locale.
     applyI18n(this.el, this.signal);
 
     // Open the token customizer (handled by the Customizer view via a prop callback)

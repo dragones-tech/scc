@@ -117,7 +117,7 @@ not a specificity war. Used in tabs.css, menu.css and chip.css.
     sunset.css         Example of forking the contract (same markup, different look)
   components/          one file per component — see the Component catalog below
     _template.css      copy this to author a new component (not imported)
-  utilities.css        @layer utilities  (.stack .cluster .center .grid .switcher .visually-hidden)
+  utilities.css        @layer utilities  (.stack .cluster .center .grid .switcher .sidebar .visually-hidden)
   demo/index.html      No-build demonstration.
 
 --------------------------------------------------------------------------------
@@ -265,8 +265,10 @@ arrangement, never appearance), each reacting to ITS OWN width, no @media:
   .center    cap the reading width                        knob --measure
   .grid      responsive columns, auto-fit + minmax        knobs --grid-min --grid-gap
   .switcher  row that flips to a column under a threshold  knobs --switcher-threshold --switcher-gap
+  .sidebar   rail + fluid content, wraps to a stack        knobs --sidebar-width --sidebar-content-min
+             rail at start; [data-side="end"] for the end side
 
-@media is left only for PAGE layout (a sidebar that collapses, etc.).
+@media is left only for PAGE layout (when even these don't fit).
 
 Honesty: breakpoints CANNOT be custom properties — `@media (min-width: var(--bp))`
 and `@container (min-width: var(--bp))` are not supported. Making it DRY would

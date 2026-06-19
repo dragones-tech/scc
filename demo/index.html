@@ -46,7 +46,7 @@
         </span>
       </nav>
       <div class="shell-body">
-        <aside class="sidebar" data-ref="menu">
+        <aside class="app-nav" data-ref="menu">
           <a href="#/" data-i18n="nav.home">Home</a>
           <a href="#/forms" data-i18n="nav.forms">Forms</a>
           <a href="#/containers" data-i18n="nav.containers">Containers</a>
@@ -434,6 +434,26 @@
           <div class="switcher" style="--switcher-threshold: 28rem">
             <article class="card"><h3>Contenido</h3><p>Sobre el umbral compartimos la fila.</p></article>
             <article class="card"><h3>Aside</h3><p>Bajo el umbral, cada uno toma una fila entera.</p></article>
+          </div>
+        </div>
+        <pre class="demo-code"><code></code></pre>
+      </div>
+
+      <div class="demo">
+        <div class="demo-head">
+          <h2 data-i18n="layout.sidebarTitle"></h2>
+          <p data-i18n="layout.sidebarDesc"></p>
+        </div>
+        <div class="demo-preview">
+          <div class="sidebar" data-side="end" style="--sidebar-width: 9rem; --sidebar-content-min: 50%">
+            <main class="card">
+              <h3>Contenido</h3>
+              <p>Crece y se queda con el espacio sobrante. Cuando ya no entra al lado del rail, todo baja a una columna — sin media query.</p>
+            </main>
+            <aside class="card">
+              <h3>Rail</h3>
+              <p>Ancho fijo a la derecha (<code>data-side="end"</code>).</p>
+            </aside>
           </div>
         </div>
         <pre class="demo-code"><code></code></pre>

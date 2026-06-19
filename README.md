@@ -131,6 +131,7 @@ each reflows on **its own** width — no breakpoints:
 | `.center` | cap the reading width | `--measure` |
 | `.grid` | responsive columns (`auto-fit` + `minmax`) | `--grid-min`, `--grid-gap` |
 | `.switcher` | row that flips to a column under a threshold | `--switcher-threshold`, `--switcher-gap` |
+| `.sidebar` | rail + fluid content, wraps to a stack (`[data-side]`) | `--sidebar-width`, `--sidebar-content-min` |
 
 ```html
 <!-- as many columns as fit, each ≥ --grid-min; the rest wrap. No @media. -->
